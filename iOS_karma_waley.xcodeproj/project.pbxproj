@@ -1,0 +1,474 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		D026BF3F19119A0D005D8767 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D026BF3E19119A0D005D8767 /* Foundation.framework */; };
+		D026BF4119119A0D005D8767 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D026BF4019119A0D005D8767 /* CoreGraphics.framework */; };
+		D026BF4319119A0D005D8767 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D026BF4219119A0D005D8767 /* UIKit.framework */; };
+		D026BF4519119A0D005D8767 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D026BF4419119A0D005D8767 /* CoreData.framework */; };
+		D026BF4B19119A0D005D8767 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D026BF4919119A0D005D8767 /* InfoPlist.strings */; };
+		D026BF4D19119A0D005D8767 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D026BF4C19119A0D005D8767 /* main.m */; };
+		D026BF5119119A0D005D8767 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D026BF5019119A0D005D8767 /* AppDelegate.m */; };
+		D026BF5419119A0D005D8767 /* iOS_karma_waley.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D026BF5219119A0D005D8767 /* iOS_karma_waley.xcdatamodeld */; };
+		D026BF5619119A0D005D8767 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D026BF5519119A0D005D8767 /* Images.xcassets */; };
+		D026BF5D19119A0D005D8767 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D026BF5C19119A0D005D8767 /* XCTest.framework */; };
+		D026BF5E19119A0D005D8767 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D026BF3E19119A0D005D8767 /* Foundation.framework */; };
+		D026BF5F19119A0D005D8767 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D026BF4219119A0D005D8767 /* UIKit.framework */; };
+		D026BF6019119A0D005D8767 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D026BF4419119A0D005D8767 /* CoreData.framework */; };
+		D026BF6819119A0D005D8767 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D026BF6619119A0D005D8767 /* InfoPlist.strings */; };
+		D026BF6A19119A0D005D8767 /* iOS_karma_waleyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D026BF6919119A0D005D8767 /* iOS_karma_waleyTests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D026BF6119119A0D005D8767 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D026BF3319119A0D005D8767 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D026BF3A19119A0D005D8767;
+			remoteInfo = iOS_karma_waley;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		D026BF3B19119A0D005D8767 /* iOS_karma_waley.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOS_karma_waley.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D026BF3E19119A0D005D8767 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		D026BF4019119A0D005D8767 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		D026BF4219119A0D005D8767 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		D026BF4419119A0D005D8767 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		D026BF4819119A0D005D8767 /* iOS_karma_waley-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "iOS_karma_waley-Info.plist"; sourceTree = "<group>"; };
+		D026BF4A19119A0D005D8767 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		D026BF4C19119A0D005D8767 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		D026BF4E19119A0D005D8767 /* iOS_karma_waley-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "iOS_karma_waley-Prefix.pch"; sourceTree = "<group>"; };
+		D026BF4F19119A0D005D8767 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		D026BF5019119A0D005D8767 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		D026BF5319119A0D005D8767 /* iOS_karma_waley.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = iOS_karma_waley.xcdatamodel; sourceTree = "<group>"; };
+		D026BF5519119A0D005D8767 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		D026BF5B19119A0D005D8767 /* iOS_karma_waleyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOS_karma_waleyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D026BF5C19119A0D005D8767 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		D026BF6519119A0D005D8767 /* iOS_karma_waleyTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "iOS_karma_waleyTests-Info.plist"; sourceTree = "<group>"; };
+		D026BF6719119A0D005D8767 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		D026BF6919119A0D005D8767 /* iOS_karma_waleyTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = iOS_karma_waleyTests.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D026BF3819119A0D005D8767 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D026BF4119119A0D005D8767 /* CoreGraphics.framework in Frameworks */,
+				D026BF4519119A0D005D8767 /* CoreData.framework in Frameworks */,
+				D026BF4319119A0D005D8767 /* UIKit.framework in Frameworks */,
+				D026BF3F19119A0D005D8767 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D026BF5819119A0D005D8767 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D026BF5D19119A0D005D8767 /* XCTest.framework in Frameworks */,
+				D026BF6019119A0D005D8767 /* CoreData.framework in Frameworks */,
+				D026BF5F19119A0D005D8767 /* UIKit.framework in Frameworks */,
+				D026BF5E19119A0D005D8767 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		D026BF3219119A0D005D8767 = {
+			isa = PBXGroup;
+			children = (
+				D026BF4619119A0D005D8767 /* iOS_karma_waley */,
+				D026BF6319119A0D005D8767 /* iOS_karma_waleyTests */,
+				D026BF3D19119A0D005D8767 /* Frameworks */,
+				D026BF3C19119A0D005D8767 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D026BF3C19119A0D005D8767 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D026BF3B19119A0D005D8767 /* iOS_karma_waley.app */,
+				D026BF5B19119A0D005D8767 /* iOS_karma_waleyTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D026BF3D19119A0D005D8767 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D026BF3E19119A0D005D8767 /* Foundation.framework */,
+				D026BF4019119A0D005D8767 /* CoreGraphics.framework */,
+				D026BF4219119A0D005D8767 /* UIKit.framework */,
+				D026BF4419119A0D005D8767 /* CoreData.framework */,
+				D026BF5C19119A0D005D8767 /* XCTest.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D026BF4619119A0D005D8767 /* iOS_karma_waley */ = {
+			isa = PBXGroup;
+			children = (
+				D026BF4F19119A0D005D8767 /* AppDelegate.h */,
+				D026BF5019119A0D005D8767 /* AppDelegate.m */,
+				D026BF5519119A0D005D8767 /* Images.xcassets */,
+				D026BF5219119A0D005D8767 /* iOS_karma_waley.xcdatamodeld */,
+				D026BF4719119A0D005D8767 /* Supporting Files */,
+			);
+			path = iOS_karma_waley;
+			sourceTree = "<group>";
+		};
+		D026BF4719119A0D005D8767 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				D026BF4819119A0D005D8767 /* iOS_karma_waley-Info.plist */,
+				D026BF4919119A0D005D8767 /* InfoPlist.strings */,
+				D026BF4C19119A0D005D8767 /* main.m */,
+				D026BF4E19119A0D005D8767 /* iOS_karma_waley-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D026BF6319119A0D005D8767 /* iOS_karma_waleyTests */ = {
+			isa = PBXGroup;
+			children = (
+				D026BF6919119A0D005D8767 /* iOS_karma_waleyTests.m */,
+				D026BF6419119A0D005D8767 /* Supporting Files */,
+			);
+			path = iOS_karma_waleyTests;
+			sourceTree = "<group>";
+		};
+		D026BF6419119A0D005D8767 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				D026BF6519119A0D005D8767 /* iOS_karma_waleyTests-Info.plist */,
+				D026BF6619119A0D005D8767 /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D026BF3A19119A0D005D8767 /* iOS_karma_waley */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D026BF6D19119A0D005D8767 /* Build configuration list for PBXNativeTarget "iOS_karma_waley" */;
+			buildPhases = (
+				D026BF3719119A0D005D8767 /* Sources */,
+				D026BF3819119A0D005D8767 /* Frameworks */,
+				D026BF3919119A0D005D8767 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = iOS_karma_waley;
+			productName = iOS_karma_waley;
+			productReference = D026BF3B19119A0D005D8767 /* iOS_karma_waley.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D026BF5A19119A0D005D8767 /* iOS_karma_waleyTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D026BF7019119A0D005D8767 /* Build configuration list for PBXNativeTarget "iOS_karma_waleyTests" */;
+			buildPhases = (
+				D026BF5719119A0D005D8767 /* Sources */,
+				D026BF5819119A0D005D8767 /* Frameworks */,
+				D026BF5919119A0D005D8767 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D026BF6219119A0D005D8767 /* PBXTargetDependency */,
+			);
+			name = iOS_karma_waleyTests;
+			productName = iOS_karma_waleyTests;
+			productReference = D026BF5B19119A0D005D8767 /* iOS_karma_waleyTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D026BF3319119A0D005D8767 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+				TargetAttributes = {
+					D026BF5A19119A0D005D8767 = {
+						TestTargetID = D026BF3A19119A0D005D8767;
+					};
+				};
+			};
+			buildConfigurationList = D026BF3619119A0D005D8767 /* Build configuration list for PBXProject "iOS_karma_waley" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = D026BF3219119A0D005D8767;
+			productRefGroup = D026BF3C19119A0D005D8767 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D026BF3A19119A0D005D8767 /* iOS_karma_waley */,
+				D026BF5A19119A0D005D8767 /* iOS_karma_waleyTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D026BF3919119A0D005D8767 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D026BF4B19119A0D005D8767 /* InfoPlist.strings in Resources */,
+				D026BF5619119A0D005D8767 /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D026BF5919119A0D005D8767 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D026BF6819119A0D005D8767 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D026BF3719119A0D005D8767 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D026BF5119119A0D005D8767 /* AppDelegate.m in Sources */,
+				D026BF4D19119A0D005D8767 /* main.m in Sources */,
+				D026BF5419119A0D005D8767 /* iOS_karma_waley.xcdatamodeld in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D026BF5719119A0D005D8767 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D026BF6A19119A0D005D8767 /* iOS_karma_waleyTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D026BF6219119A0D005D8767 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D026BF3A19119A0D005D8767 /* iOS_karma_waley */;
+			targetProxy = D026BF6119119A0D005D8767 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		D026BF4919119A0D005D8767 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D026BF4A19119A0D005D8767 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		D026BF6619119A0D005D8767 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D026BF6719119A0D005D8767 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		D026BF6B19119A0D005D8767 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		D026BF6C19119A0D005D8767 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		D026BF6E19119A0D005D8767 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "iOS_karma_waley/iOS_karma_waley-Prefix.pch";
+				INFOPLIST_FILE = "iOS_karma_waley/iOS_karma_waley-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		D026BF6F19119A0D005D8767 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "iOS_karma_waley/iOS_karma_waley-Prefix.pch";
+				INFOPLIST_FILE = "iOS_karma_waley/iOS_karma_waley-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		D026BF7119119A0D005D8767 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/iOS_karma_waley.app/iOS_karma_waley";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "iOS_karma_waley/iOS_karma_waley-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "iOS_karma_waleyTests/iOS_karma_waleyTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		D026BF7219119A0D005D8767 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/iOS_karma_waley.app/iOS_karma_waley";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "iOS_karma_waley/iOS_karma_waley-Prefix.pch";
+				INFOPLIST_FILE = "iOS_karma_waleyTests/iOS_karma_waleyTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D026BF3619119A0D005D8767 /* Build configuration list for PBXProject "iOS_karma_waley" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D026BF6B19119A0D005D8767 /* Debug */,
+				D026BF6C19119A0D005D8767 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D026BF6D19119A0D005D8767 /* Build configuration list for PBXNativeTarget "iOS_karma_waley" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D026BF6E19119A0D005D8767 /* Debug */,
+				D026BF6F19119A0D005D8767 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		D026BF7019119A0D005D8767 /* Build configuration list for PBXNativeTarget "iOS_karma_waleyTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D026BF7119119A0D005D8767 /* Debug */,
+				D026BF7219119A0D005D8767 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		D026BF5219119A0D005D8767 /* iOS_karma_waley.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				D026BF5319119A0D005D8767 /* iOS_karma_waley.xcdatamodel */,
+			);
+			currentVersion = D026BF5319119A0D005D8767 /* iOS_karma_waley.xcdatamodel */;
+			path = iOS_karma_waley.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = D026BF3319119A0D005D8767 /* Project object */;
+}
