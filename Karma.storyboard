@@ -47,7 +47,7 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="nickname" destination="r2Y-rM-GEp" id="9yi-yg-Eu8"/>
+                        <outlet property="nicknameTextField" destination="r2Y-rM-GEp" id="S91-qY-TlI"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cmL-cY-P3v" userLabel="First Responder" sceneMemberID="firstResponder"/>

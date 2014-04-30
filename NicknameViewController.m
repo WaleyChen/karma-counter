@@ -9,7 +9,6 @@
 #import "NicknameViewController.h"
 
 @interface NicknameViewController ()
-@property (weak, nonatomic) IBOutlet UITextField *nickname;
 
 @end
 
@@ -27,10 +26,15 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+
+    self.nicknameTextField.delegate = self;
     
     // Check if nickname has been chosen
-    
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
+    return NO;
 }
 
 - (void)didReceiveMemoryWarning
