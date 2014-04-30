@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="BL4-Vy-V1K">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+    </dependencies>
+    <scenes>
+        <!--Nickname View Controller-->
+        <scene sceneID="OcT-Ll-XgP">
+            <objects>
+                <viewController id="BL4-Vy-V1K" customClass="NicknameViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="dgW-vM-2aC"/>
+                        <viewControllerLayoutGuide type="bottom" id="x5Q-w9-HW7"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="0NG-Sa-vcG">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please enter a nickname." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6ug-YU-VVa">
+                                <rect key="frame" x="64" y="97" width="193" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome to Karma Counter!" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rCG-d1-jqQ">
+                                <rect key="frame" x="52" y="68" width="217" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="r2Y-rM-GEp">
+                                <rect key="frame" x="64" y="126" width="193" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="r2Y-rM-GEp" firstAttribute="top" secondItem="6ug-YU-VVa" secondAttribute="bottom" constant="8" symbolic="YES" id="GtT-9S-V3E"/>
+                            <constraint firstItem="rCG-d1-jqQ" firstAttribute="centerX" secondItem="6ug-YU-VVa" secondAttribute="centerX" id="HbE-hk-bhg"/>
+                            <constraint firstItem="6ug-YU-VVa" firstAttribute="top" secondItem="rCG-d1-jqQ" secondAttribute="bottom" constant="8" symbolic="YES" id="aEb-VE-e4B"/>
+                            <constraint firstItem="r2Y-rM-GEp" firstAttribute="centerX" secondItem="0NG-Sa-vcG" secondAttribute="centerX" id="fKR-wu-UjS"/>
+                            <constraint firstItem="6ug-YU-VVa" firstAttribute="trailing" secondItem="r2Y-rM-GEp" secondAttribute="trailing" id="i7r-dQ-An1"/>
+                            <constraint firstItem="r2Y-rM-GEp" firstAttribute="leading" secondItem="6ug-YU-VVa" secondAttribute="leading" id="tE9-Cx-0ON"/>
+                            <constraint firstItem="rCG-d1-jqQ" firstAttribute="top" secondItem="dgW-vM-2aC" secondAttribute="bottom" constant="48" id="y3c-eJ-tNg"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="nickname" destination="r2Y-rM-GEp" id="9yi-yg-Eu8"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cmL-cY-P3v" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="212" y="50"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="kfV-cb-Cm4">
+            <objects>
+                <viewController id="aJb-oA-Ohd" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="s5P-if-BXB"/>
+                        <viewControllerLayoutGuide type="bottom" id="22q-1w-x4g"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="d3N-J7-w8b">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="UEZ-Mu-5UY" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="974" y="64"/>
+        </scene>
+    </scenes>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4"/>
+    </simulatedMetricsContainer>
+</document>

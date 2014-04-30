@@ -22,6 +22,8 @@
 		D026BF6019119A0D005D8767 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D026BF4419119A0D005D8767 /* CoreData.framework */; };
 		D026BF6819119A0D005D8767 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D026BF6619119A0D005D8767 /* InfoPlist.strings */; };
 		D026BF6A19119A0D005D8767 /* iOS_karma_waleyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D026BF6919119A0D005D8767 /* iOS_karma_waleyTests.m */; };
+		D026BF7C1911A02D005D8767 /* Karma.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D026BF7B1911A02D005D8767 /* Karma.storyboard */; };
+		D026BF7F1911A966005D8767 /* NicknameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D026BF7E1911A966005D8767 /* NicknameViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +55,9 @@
 		D026BF6519119A0D005D8767 /* iOS_karma_waleyTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "iOS_karma_waleyTests-Info.plist"; sourceTree = "<group>"; };
 		D026BF6719119A0D005D8767 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		D026BF6919119A0D005D8767 /* iOS_karma_waleyTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = iOS_karma_waleyTests.m; sourceTree = "<group>"; };
+		D026BF7B1911A02D005D8767 /* Karma.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Karma.storyboard; sourceTree = "<group>"; };
+		D026BF7D1911A966005D8767 /* NicknameViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NicknameViewController.h; sourceTree = "<group>"; };
+		D026BF7E1911A966005D8767 /* NicknameViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NicknameViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +89,9 @@
 		D026BF3219119A0D005D8767 = {
 			isa = PBXGroup;
 			children = (
+				D026BF7B1911A02D005D8767 /* Karma.storyboard */,
+				D026BF7D1911A966005D8767 /* NicknameViewController.h */,
+				D026BF7E1911A966005D8767 /* NicknameViewController.m */,
 				D026BF4619119A0D005D8767 /* iOS_karma_waley */,
 				D026BF6319119A0D005D8767 /* iOS_karma_waleyTests */,
 				D026BF3D19119A0D005D8767 /* Frameworks */,
@@ -227,6 +235,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D026BF7C1911A02D005D8767 /* Karma.storyboard in Resources */,
 				D026BF4B19119A0D005D8767 /* InfoPlist.strings in Resources */,
 				D026BF5619119A0D005D8767 /* Images.xcassets in Resources */,
 			);
@@ -247,6 +256,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D026BF7F1911A966005D8767 /* NicknameViewController.m in Sources */,
 				D026BF5119119A0D005D8767 /* AppDelegate.m in Sources */,
 				D026BF4D19119A0D005D8767 /* main.m in Sources */,
 				D026BF5419119A0D005D8767 /* iOS_karma_waley.xcdatamodeld in Sources */,
