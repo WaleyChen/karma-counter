@@ -6,9 +6,12 @@
 //
 //
 
+#import "AppDelegate.h"
+#import "Nickname.h"
 #import "NicknameViewController.h"
 
 @interface NicknameViewController ()
+@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 
 @end
 
@@ -27,6 +30,9 @@
 {
     [super viewDidLoad];
 
+    AppDelegate* appDelegate = [UIApplication sharedApplication].delegate;
+    self.managedObjectContext = appDelegate.managedObjectContext;
+    
     self.nicknameTextField.delegate = self;
     
     // Check if nickname has been chosen
