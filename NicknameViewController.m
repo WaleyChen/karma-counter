@@ -34,6 +34,10 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
+    
+    // store the nickname
+    
+    
     return NO;
 }
 

@@ -24,6 +24,7 @@
 		D026BF6A19119A0D005D8767 /* iOS_karma_waleyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D026BF6919119A0D005D8767 /* iOS_karma_waleyTests.m */; };
 		D026BF7C1911A02D005D8767 /* Karma.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D026BF7B1911A02D005D8767 /* Karma.storyboard */; };
 		D026BF7F1911A966005D8767 /* NicknameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D026BF7E1911A966005D8767 /* NicknameViewController.m */; };
+		D026BF8D1911C0B7005D8767 /* Nickname.m in Sources */ = {isa = PBXBuildFile; fileRef = D026BF8C1911C0B7005D8767 /* Nickname.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +59,8 @@
 		D026BF7B1911A02D005D8767 /* Karma.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Karma.storyboard; sourceTree = "<group>"; };
 		D026BF7D1911A966005D8767 /* NicknameViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NicknameViewController.h; sourceTree = "<group>"; };
 		D026BF7E1911A966005D8767 /* NicknameViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NicknameViewController.m; sourceTree = "<group>"; };
+		D026BF8B1911C0B7005D8767 /* Nickname.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Nickname.h; sourceTree = "<group>"; };
+		D026BF8C1911C0B7005D8767 /* Nickname.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Nickname.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,6 +130,8 @@
 				D026BF5019119A0D005D8767 /* AppDelegate.m */,
 				D026BF5519119A0D005D8767 /* Images.xcassets */,
 				D026BF5219119A0D005D8767 /* iOS_karma_waley.xcdatamodeld */,
+				D026BF8B1911C0B7005D8767 /* Nickname.h */,
+				D026BF8C1911C0B7005D8767 /* Nickname.m */,
 				D026BF4719119A0D005D8767 /* Supporting Files */,
 			);
 			path = iOS_karma_waley;
@@ -260,6 +265,7 @@
 				D026BF5119119A0D005D8767 /* AppDelegate.m in Sources */,
 				D026BF4D19119A0D005D8767 /* main.m in Sources */,
 				D026BF5419119A0D005D8767 /* iOS_karma_waley.xcdatamodeld in Sources */,
+				D026BF8D1911C0B7005D8767 /* Nickname.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -456,6 +462,7 @@
 				D026BF6F19119A0D005D8767 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		D026BF7019119A0D005D8767 /* Build configuration list for PBXNativeTarget "iOS_karma_waleyTests" */ = {
 			isa = XCConfigurationList;
@@ -464,6 +471,7 @@
 				D026BF7219119A0D005D8767 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
