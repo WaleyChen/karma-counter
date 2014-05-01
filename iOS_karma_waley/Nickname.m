@@ -6,27 +6,49 @@
 //
 //
 
+#import "AppDelegate.h"
 #import "Nickname.h"
-
 
 @implementation Nickname
 
 @dynamic nickname;
 
-//+ (id)sharedNickname {
-//    static Nickname *sharedMyNickname = nil;
-//    static dispatch_once_t onceToken;
-//    dispatch_once(&onceToken, ^{
-//        sharedMyNickname = [[self alloc] init];
-//    });
-//    return sharedMyNickname;
-//}
-//
-//- (id)init {
-//    if (self = [super init]) {
-//        // someProperty = [[NSString alloc] initWithString:@"Default Property Value"];
-//    }
-//    return self;
-//}
++ (NSString*)getNickname
+{
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    
+    NSEntityDescription *entity = [
+        NSEntityDescription entityForName:@"Nickname"
+        inManagedObjectContext:[AppDelegate sharedManagedObjectContext]
+    ];
+    
+    [fetchRequest setEntity:entity];
+    
+    NSError* error;
+    NSArray *fetchedRecords = [
+        [AppDelegate sharedManagedObjectContext] executeFetchRequest:fetchRequest error:&error
+    ];
+    
+    if ([fetchedRecords count] == 0)
+        return nil;
+    
+    Nickname *nicknameEntity = fetchedRecords[0];
+    return nicknameEntity.nickname;
+}
+
++ (void)setNickname:(NSString *)nickname
+{
+    Nickname *nicknameEntity = [
+        NSEntityDescription insertNewObjectForEntityForName:@"Nickname"
+        inManagedObjectContext:[AppDelegate sharedManagedObjectContext]
+    ];
+    
+    nicknameEntity.nickname = nickname;
+    
+    NSError *error;
+    if (![[AppDelegate sharedManagedObjectContext] save:&error]) {
+        NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
+    }
+}
 
 @end
