@@ -66,19 +66,37 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Welcome" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3F8-QL-SwF">
-                                <rect key="frame" x="139" y="63" width="71" height="21"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Nickname" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3F8-QL-SwF">
+                                <rect key="frame" x="20" y="68" width="280" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3QX-e0-wrh">
+                                <rect key="frame" x="20" y="97" width="280" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="3QX-e0-wrh" firstAttribute="trailing" secondItem="3F8-QL-SwF" secondAttribute="trailing" id="2Mn-VH-aCa"/>
+                            <constraint firstAttribute="trailing" secondItem="3F8-QL-SwF" secondAttribute="trailing" constant="20" symbolic="YES" id="JKg-Ji-h5b"/>
+                            <constraint firstItem="3QX-e0-wrh" firstAttribute="leading" secondItem="3F8-QL-SwF" secondAttribute="leading" id="Nkg-54-s4E"/>
+                            <constraint firstItem="3F8-QL-SwF" firstAttribute="top" secondItem="s5P-if-BXB" secondAttribute="bottom" constant="48" id="ayv-lp-Hwm"/>
+                            <constraint firstItem="3QX-e0-wrh" firstAttribute="top" secondItem="3F8-QL-SwF" secondAttribute="bottom" constant="8" symbolic="YES" id="hOG-Mt-WzB"/>
+                            <constraint firstItem="3F8-QL-SwF" firstAttribute="leading" secondItem="d3N-J7-w8b" secondAttribute="leading" constant="20" symbolic="YES" id="xcl-V1-IRQ"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="NicknameLabel" destination="3F8-QL-SwF" id="iEj-4a-2ZD"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UEZ-Mu-5UY" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="974" y="64"/>
+            <point key="canvasLocation" x="937" y="62"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

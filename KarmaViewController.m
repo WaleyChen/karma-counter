@@ -6,9 +6,12 @@
 //
 //
 
+#import "Nickname.h"
 #import "KarmaViewController.h"
 
 @interface KarmaViewController ()
+
+@property (weak, nonatomic) IBOutlet UILabel *NicknameLabel;
 
 @end
 
@@ -26,7 +29,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    
+    [self NicknameLabel].text = [NSString stringWithFormat:@"%@%@", [Nickname getNickname], @"'s Karma"];;
 }
 
 - (void)didReceiveMemoryWarning
