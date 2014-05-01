@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="BL4-Vy-V1K">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
@@ -7,7 +7,7 @@
         <!--Nickname View Controller-->
         <scene sceneID="OcT-Ll-XgP">
             <objects>
-                <viewController id="BL4-Vy-V1K" customClass="NicknameViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="NicknameViewController" id="BL4-Vy-V1K" customClass="NicknameViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="dgW-vM-2aC"/>
                         <viewControllerLayoutGuide type="bottom" id="x5Q-w9-HW7"/>
@@ -54,10 +54,10 @@
             </objects>
             <point key="canvasLocation" x="212" y="50"/>
         </scene>
-        <!--View Controller-->
+        <!--Karma View Controller-->
         <scene sceneID="kfV-cb-Cm4">
             <objects>
-                <viewController id="aJb-oA-Ohd" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="KarmaViewController" id="aJb-oA-Ohd" customClass="KarmaViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="s5P-if-BXB"/>
                         <viewControllerLayoutGuide type="bottom" id="22q-1w-x4g"/>
@@ -65,6 +65,14 @@
                     <view key="view" contentMode="scaleToFill" id="d3N-J7-w8b">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Welcome" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3F8-QL-SwF">
+                                <rect key="frame" x="139" y="63" width="71" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                 </viewController>

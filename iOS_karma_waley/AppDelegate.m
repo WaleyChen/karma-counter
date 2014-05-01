@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "Nickname.h"
 
 @implementation AppDelegate
 
@@ -19,6 +20,21 @@ static NSManagedObjectContext* managedObjectContext;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     managedObjectContext = self.managedObjectContext;
+    
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    
+    UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Karma" bundle:nil];
+    UIViewController *viewController;
+    
+    // load "Choose Nickname" view if nickname has not been set, otherwise load "Karma" view
+    if ([Nickname getNickname] == nil) {
+        viewController = [storyBoard instantiateViewControllerWithIdentifier:@"NicknameViewController"];
+        self.window.rootViewController = viewController;
+    } else {
+        viewController = [storyBoard instantiateViewControllerWithIdentifier:@"KarmaViewController"];
+    }
+    self.window.rootViewController = viewController;
+    [self.window makeKeyAndVisible];
     
     return YES;
 }

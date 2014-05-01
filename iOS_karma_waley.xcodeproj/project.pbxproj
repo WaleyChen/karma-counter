@@ -25,6 +25,7 @@
 		D026BF7C1911A02D005D8767 /* Karma.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D026BF7B1911A02D005D8767 /* Karma.storyboard */; };
 		D026BF7F1911A966005D8767 /* NicknameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D026BF7E1911A966005D8767 /* NicknameViewController.m */; };
 		D026BF8D1911C0B7005D8767 /* Nickname.m in Sources */ = {isa = PBXBuildFile; fileRef = D026BF8C1911C0B7005D8767 /* Nickname.m */; };
+		D026BF901912376E005D8767 /* KarmaViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D026BF8F1912376E005D8767 /* KarmaViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +62,8 @@
 		D026BF7E1911A966005D8767 /* NicknameViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NicknameViewController.m; sourceTree = "<group>"; };
 		D026BF8B1911C0B7005D8767 /* Nickname.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Nickname.h; sourceTree = "<group>"; };
 		D026BF8C1911C0B7005D8767 /* Nickname.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Nickname.m; sourceTree = "<group>"; };
+		D026BF8E1912376E005D8767 /* KarmaViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KarmaViewController.h; sourceTree = "<group>"; };
+		D026BF8F1912376E005D8767 /* KarmaViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KarmaViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +97,8 @@
 			children = (
 				D026BF7B1911A02D005D8767 /* Karma.storyboard */,
 				D026BF7D1911A966005D8767 /* NicknameViewController.h */,
+				D026BF8E1912376E005D8767 /* KarmaViewController.h */,
+				D026BF8F1912376E005D8767 /* KarmaViewController.m */,
 				D026BF7E1911A966005D8767 /* NicknameViewController.m */,
 				D026BF4619119A0D005D8767 /* iOS_karma_waley */,
 				D026BF6319119A0D005D8767 /* iOS_karma_waleyTests */,
@@ -262,6 +267,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D026BF7F1911A966005D8767 /* NicknameViewController.m in Sources */,
+				D026BF901912376E005D8767 /* KarmaViewController.m in Sources */,
 				D026BF5119119A0D005D8767 /* AppDelegate.m in Sources */,
 				D026BF4D19119A0D005D8767 /* main.m in Sources */,
 				D026BF5419119A0D005D8767 /* iOS_karma_waley.xcdatamodeld in Sources */,

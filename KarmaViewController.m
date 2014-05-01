@@ -1,20 +1,18 @@
 //
-//  NicknameViewController.m
+//  KarmaViewController.m
 //  iOS_karma_waley
 //
-//  Created by Waley Chen on 2014-04-30.
+//  Created by Waley Chen on 2014-05-01.
 //
 //
 
-#import "AppDelegate.h"
-#import "Nickname.h"
-#import "NicknameViewController.h"
+#import "KarmaViewController.h"
 
-@interface NicknameViewController ()
+@interface KarmaViewController ()
 
 @end
 
-@implementation NicknameViewController
+@implementation KarmaViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -28,22 +26,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    self.nicknameTextField.delegate = self;
+    // Do any additional setup after loading the view.
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    [textField resignFirstResponder];
-    
-    [Nickname setNickname:textField.text];
-    
-    return NO;
 }
 
 /*
