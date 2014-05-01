@@ -10,15 +10,15 @@
 
 @implementation AppDelegate
 
+static NSManagedObjectContext* managedObjectContext;
+
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-//    if () {
-//        
-//    }
+    managedObjectContext = self.managedObjectContext;
     
     return YES;
 }
@@ -136,6 +136,15 @@
     }    
     
     return _persistentStoreCoordinator;
+}
+
++ (NSManagedObjectContext *)sharedManagedObjectContext
+{
+    if (managedObjectContext == nil) {
+        managedObjectContext = [(AppDelegate*)[UIApplication sharedApplication].delegate managedObjectContext];
+    }
+    
+    return managedObjectContext;
 }
 
 #pragma mark - Application's Documents directory

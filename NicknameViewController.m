@@ -11,7 +11,6 @@
 #import "NicknameViewController.h"
 
 @interface NicknameViewController ()
-@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 
 @end
 
@@ -29,9 +28,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-    AppDelegate* appDelegate = [UIApplication sharedApplication].delegate;
-    self.managedObjectContext = appDelegate.managedObjectContext;
     
     self.nicknameTextField.delegate = self;
     
@@ -62,14 +58,14 @@
     
     NSEntityDescription *entity = [
         NSEntityDescription entityForName:@"Nickname"
-        inManagedObjectContext:self.managedObjectContext
+        inManagedObjectContext:[AppDelegate sharedManagedObjectContext]
     ];
     
     [fetchRequest setEntity:entity];
     
     NSError* error;
     NSArray *fetchedRecords = [
-        self.managedObjectContext executeFetchRequest:fetchRequest error:&error
+        [AppDelegate sharedManagedObjectContext] executeFetchRequest:fetchRequest error:&error
     ];
     
     if ([fetchedRecords count] == 0)
@@ -83,13 +79,13 @@
 {
     Nickname *nicknameEntity = [
         NSEntityDescription insertNewObjectForEntityForName:@"Nickname"
-        inManagedObjectContext:self.managedObjectContext
+        inManagedObjectContext:[AppDelegate sharedManagedObjectContext]
     ];
     
     nicknameEntity.nickname = nickname;
     
     NSError *error;
-    if (![self.managedObjectContext save:&error]) {
+    if (![[AppDelegate sharedManagedObjectContext] save:&error]) {
         NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
     }
 }
