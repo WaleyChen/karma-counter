@@ -14,4 +14,7 @@
 
 @property (nonatomic, retain) NSString * nickname;
 
++ (NSString*)getNickname;
++ (void)setNickname:(NSString *)nickname;
+
 @end

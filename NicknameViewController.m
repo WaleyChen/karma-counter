@@ -36,21 +36,62 @@
     self.nicknameTextField.delegate = self;
     
     // Check if nickname has been chosen
-}
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    [textField resignFirstResponder];
-    
-    // store the nickname
-    
-    
-    return NO;
+    if ([self getNickname] == nil)
+        NSLog(@"No nickname set.");
+    else
+        NSLog(@"Nickname is %@.", [self getNickname]);
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
+    
+    [self setNickname:textField.text];
+    
+    return NO;
+}
+
+- (NSString*)getNickname
+{
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    
+    NSEntityDescription *entity = [
+        NSEntityDescription entityForName:@"Nickname"
+        inManagedObjectContext:self.managedObjectContext
+    ];
+    
+    [fetchRequest setEntity:entity];
+    
+    NSError* error;
+    NSArray *fetchedRecords = [
+        self.managedObjectContext executeFetchRequest:fetchRequest error:&error
+    ];
+    
+    if ([fetchedRecords count] == 0)
+        return nil;
+    
+    Nickname *nicknameEntity = fetchedRecords[0];
+    return nicknameEntity.nickname;
+}
+
+- (void)setNickname:(NSString *)nickname
+{
+    Nickname *nicknameEntity = [
+        NSEntityDescription insertNewObjectForEntityForName:@"Nickname"
+        inManagedObjectContext:self.managedObjectContext
+    ];
+    
+    nicknameEntity.nickname = nickname;
+    
+    NSError *error;
+    if (![self.managedObjectContext save:&error]) {
+        NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
+    }
 }
 
 /*
