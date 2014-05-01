@@ -26,6 +26,7 @@
 		D026BF7F1911A966005D8767 /* NicknameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D026BF7E1911A966005D8767 /* NicknameViewController.m */; };
 		D026BF8D1911C0B7005D8767 /* Nickname.m in Sources */ = {isa = PBXBuildFile; fileRef = D026BF8C1911C0B7005D8767 /* Nickname.m */; };
 		D026BF901912376E005D8767 /* KarmaViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D026BF8F1912376E005D8767 /* KarmaViewController.m */; };
+		D026BF931912CC9C005D8767 /* Karma.m in Sources */ = {isa = PBXBuildFile; fileRef = D026BF921912CC9C005D8767 /* Karma.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +65,8 @@
 		D026BF8C1911C0B7005D8767 /* Nickname.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Nickname.m; sourceTree = "<group>"; };
 		D026BF8E1912376E005D8767 /* KarmaViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KarmaViewController.h; sourceTree = "<group>"; };
 		D026BF8F1912376E005D8767 /* KarmaViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KarmaViewController.m; sourceTree = "<group>"; };
+		D026BF911912CC9C005D8767 /* Karma.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Karma.h; sourceTree = "<group>"; };
+		D026BF921912CC9C005D8767 /* Karma.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Karma.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,6 +138,8 @@
 				D026BF5019119A0D005D8767 /* AppDelegate.m */,
 				D026BF5519119A0D005D8767 /* Images.xcassets */,
 				D026BF5219119A0D005D8767 /* iOS_karma_waley.xcdatamodeld */,
+				D026BF911912CC9C005D8767 /* Karma.h */,
+				D026BF921912CC9C005D8767 /* Karma.m */,
 				D026BF8B1911C0B7005D8767 /* Nickname.h */,
 				D026BF8C1911C0B7005D8767 /* Nickname.m */,
 				D026BF4719119A0D005D8767 /* Supporting Files */,
@@ -269,6 +274,7 @@
 				D026BF7F1911A966005D8767 /* NicknameViewController.m in Sources */,
 				D026BF901912376E005D8767 /* KarmaViewController.m in Sources */,
 				D026BF5119119A0D005D8767 /* AppDelegate.m in Sources */,
+				D026BF931912CC9C005D8767 /* Karma.m in Sources */,
 				D026BF4D19119A0D005D8767 /* main.m in Sources */,
 				D026BF5419119A0D005D8767 /* iOS_karma_waley.xcdatamodeld in Sources */,
 				D026BF8D1911C0B7005D8767 /* Nickname.m in Sources */,

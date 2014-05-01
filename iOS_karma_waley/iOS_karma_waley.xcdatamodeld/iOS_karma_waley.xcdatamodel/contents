@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13C64" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Karma" representedClassName="Karma" syncable="YES">
+        <attribute name="karma" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+    </entity>
     <entity name="Nickname" representedClassName="Nickname" syncable="YES">
         <attribute name="nickname" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
         <element name="Nickname" positionX="-63" positionY="-18" width="128" height="60"/>
+        <element name="Karma" positionX="-27" positionY="27" width="128" height="58"/>
     </elements>
 </model>
