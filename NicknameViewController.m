@@ -41,20 +41,20 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
     
-    [Nickname setNickname:textField.text];
+    if ([textField.text length] > 0) {
+        [Nickname setNickname:textField.text];
+        
+        [self.view removeFromSuperview];
+        
+        UIWindow *window = [[UIApplication sharedApplication].delegate window];
+        UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Karma" bundle:nil];
+        UIViewController *viewController = [storyBoard instantiateViewControllerWithIdentifier:@"KarmaViewController"];
+        
+        window.rootViewController = viewController;
+        [window makeKeyAndVisible];
+    }
     
     return NO;
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

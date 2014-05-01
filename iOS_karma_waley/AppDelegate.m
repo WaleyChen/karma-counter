@@ -28,11 +28,10 @@ static NSManagedObjectContext* managedObjectContext;
     NSString *viewControllerIdentifier;
     
     // load "Choose Nickname" view if nickname has not been set, otherwise load "Karma" view
-    if ([Nickname getNickname] == nil) {
+    if ([Nickname getNickname] == nil)
         viewControllerIdentifier = @"NicknameViewController";
-    } else {
+    else
         viewControllerIdentifier = @"KarmaViewController";
-    }
     
     viewController = [storyBoard instantiateViewControllerWithIdentifier:viewControllerIdentifier];
     self.window.rootViewController = viewController;
