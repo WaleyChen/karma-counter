@@ -20,19 +20,21 @@ static NSManagedObjectContext* managedObjectContext;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     managedObjectContext = self.managedObjectContext;
-    
+
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
     UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Karma" bundle:nil];
     UIViewController *viewController;
+    NSString *viewControllerIdentifier;
     
     // load "Choose Nickname" view if nickname has not been set, otherwise load "Karma" view
     if ([Nickname getNickname] == nil) {
-        viewController = [storyBoard instantiateViewControllerWithIdentifier:@"NicknameViewController"];
-        self.window.rootViewController = viewController;
+        viewControllerIdentifier = @"NicknameViewController";
     } else {
-        viewController = [storyBoard instantiateViewControllerWithIdentifier:@"KarmaViewController"];
+        viewControllerIdentifier = @"KarmaViewController";
     }
+    
+    viewController = [storyBoard instantiateViewControllerWithIdentifier:viewControllerIdentifier];
     self.window.rootViewController = viewController;
     [self.window makeKeyAndVisible];
     

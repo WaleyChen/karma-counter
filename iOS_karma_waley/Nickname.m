@@ -17,12 +17,11 @@
 {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     
-    NSEntityDescription *entity = [
+    NSEntityDescription *nicknameEntity = [
         NSEntityDescription entityForName:@"Nickname"
         inManagedObjectContext:[AppDelegate sharedManagedObjectContext]
     ];
-    
-    [fetchRequest setEntity:entity];
+    [fetchRequest setEntity:nicknameEntity];
     
     NSError* error;
     NSArray *fetchedRecords = [
@@ -32,8 +31,7 @@
     if ([fetchedRecords count] == 0)
         return nil;
     
-    Nickname *nicknameEntity = fetchedRecords[0];
-    return nicknameEntity.nickname;
+    return [(Nickname*)fetchedRecords[0] nickname];
 }
 
 + (void)setNickname:(NSString *)nickname
@@ -42,7 +40,6 @@
         NSEntityDescription insertNewObjectForEntityForName:@"Nickname"
         inManagedObjectContext:[AppDelegate sharedManagedObjectContext]
     ];
-    
     nicknameEntity.nickname = nickname;
     
     NSError *error;

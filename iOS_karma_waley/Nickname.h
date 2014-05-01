@@ -15,6 +15,5 @@
 
 + (NSString*)getNickname;
 + (void)setNickname:(NSString *)nickname;
-+ (id)sharedNickname;
 
 @end
