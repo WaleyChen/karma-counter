@@ -67,6 +67,7 @@
 		D026BF8F1912376E005D8767 /* KarmaViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KarmaViewController.m; sourceTree = "<group>"; };
 		D026BF911912CC9C005D8767 /* Karma.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Karma.h; sourceTree = "<group>"; };
 		D026BF921912CC9C005D8767 /* Karma.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Karma.m; sourceTree = "<group>"; };
+		D026BF971912F093005D8767 /* TransferService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TransferService.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -142,6 +143,7 @@
 				D026BF921912CC9C005D8767 /* Karma.m */,
 				D026BF8B1911C0B7005D8767 /* Nickname.h */,
 				D026BF8C1911C0B7005D8767 /* Nickname.m */,
+				D026BF971912F093005D8767 /* TransferService.h */,
 				D026BF4719119A0D005D8767 /* Supporting Files */,
 			);
 			path = iOS_karma_waley;
