@@ -60,6 +60,7 @@
 {
     [super viewDidLoad];
     
+    _discoveredPeripherals = [[NSMutableArray alloc] init];
     _num = [NSNumber numberWithInt:0];
     
     // bluetooth
@@ -89,23 +90,14 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 10;
+    return [_discoveredPeripherals count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"KarmaTableCell" forIndexPath:indexPath];
-    cell.textLabel.text = @"wee";
     
-    // Configure the cell...
-//    XYZToDoItem *toDoItem = [self.toDoItems objectAtIndex:indexPath.row];
-//    cell.textLabel.text = toDoItem.itemName;
-//    
-//    if (toDoItem.completed) {
-//        cell.accessoryType = UITableViewCellAccessoryCheckmark;
-//    } else {
-//        cell.accessoryType = UITableViewCellAccessoryNone;
-//    }
+    cell.textLabel.text = ((NSString*)([_discoveredPeripherals objectAtIndex:indexPath.row]));
     
     return cell;
 }
@@ -157,12 +149,20 @@
     if (!(-45 <= RSSI.integerValue && RSSI.integerValue <= -15))
         return;
     
-    NSLog(@"Discovered %@ at %@", peripheral.name, RSSI);
-    NSLog(@"NAME: %@", advertisementData[@"kCBAdvDataLocalName"]);
+    NSString* peripheralName = advertisementData[@"kCBAdvDataLocalName"];
+    
+//    NSLog(@"Discovered peripheral %@", peripheralName);
+    
+    if (![_discoveredPeripherals containsObject:peripheralName]) {
+        NSLog(@"Discovered peripheral %@", peripheralName);
+        
+        [_discoveredPeripherals addObject:peripheralName];
+        [_karmaTableView reloadData];
+        
+        NSLog(@"Table size %d", [_discoveredPeripherals count]);
+    }
     
     return;
-    
-    NSString* name = advertisementData[@"kCBAdvDataLocalName"];
     
         // Ok, it's in range - have we already seen it?
         if (self.discoveredPeripheral != peripheral) {
