@@ -15,7 +15,9 @@
 
 @property (strong, nonatomic) CBCentralManager          *centralManager;
 @property (strong, nonatomic) CBPeripheral              *discoveredPeripheral;
-@property (strong, nonatomic) NSMutableArray            *discoveredPeripherals;
+
+@property (strong, atomic) NSMutableArray            *discoveredPeripherals;
+@property (strong, atomic) NSMutableArray            *discoveredPeripheralsLastSeen;
 
 @property (weak, nonatomic) IBOutlet UILabel            *nicknameLabel;
 @property (weak, nonatomic) IBOutlet UITableView        *karmaTableView;
@@ -40,10 +42,8 @@
 
 @end
 
-#define kSendDataInterval   1.0                         // BK - Let's send data every second when connected
-
-// BK - Apple set this to 20, the maximum payload size.
-#define NOTIFY_MTU      20
+#define kSendDataInterval   1.0  // BK - Let's send data every second when connected
+#define NOTIFY_MTU          20 // BK - Apple set this to 20, the maximum payload size.
 
 @implementation KarmaViewController
 
@@ -61,6 +61,7 @@
     [super viewDidLoad];
     
     _discoveredPeripherals = [[NSMutableArray alloc] init];
+    _discoveredPeripheralsLastSeen = [[NSMutableArray alloc] init];
     _num = [NSNumber numberWithInt:0];
     
     // bluetooth
@@ -72,12 +73,43 @@
     
     _karmaTableView.dataSource = self;
     _karmaTableView.delegate = self;
+    
+    [self removeExpiredPeripherals];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+//
+- (void)removeExpiredPeripherals
+{
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+            NSDate* lastSeen;
+            NSTimeInterval secondsBetween;
+            
+            for (int i = 0; i < [_discoveredPeripherals count]; i++)
+            {
+                lastSeen = _discoveredPeripheralsLastSeen[i];
+                secondsBetween = [[NSDate date] timeIntervalSinceDate:lastSeen];
+                
+                if (secondsBetween >= 5) {
+                    NSLog(@"Deleted %@", _discoveredPeripherals[i]);
+                    [_discoveredPeripherals removeObjectAtIndex:i];
+                    [_discoveredPeripheralsLastSeen removeObjectAtIndex:i];
+                    i--;
+                }
+            }
+            
+            sleep(1);
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [_karmaTableView reloadData];
+                [self removeExpiredPeripherals];
+            });
+        });
 }
 
 
@@ -149,17 +181,19 @@
     if (!(-45 <= RSSI.integerValue && RSSI.integerValue <= -15))
         return;
     
+    NSDate* curDate = [NSDate date];
     NSString* peripheralName = advertisementData[@"kCBAdvDataLocalName"];
     
 //    NSLog(@"Discovered peripheral %@", peripheralName);
     
-    if (![_discoveredPeripherals containsObject:peripheralName]) {
-        NSLog(@"Discovered peripheral %@", peripheralName);
-        
+    NSUInteger i = [_discoveredPeripherals indexOfObject:peripheralName];
+    
+    if (i == NSNotFound) {
         [_discoveredPeripherals addObject:peripheralName];
+        [_discoveredPeripheralsLastSeen addObject:curDate];
         [_karmaTableView reloadData];
-        
-        NSLog(@"Table size %d", [_discoveredPeripherals count]);
+    } else {
+        _discoveredPeripheralsLastSeen[i] = curDate;
     }
     
     return;
