@@ -8,6 +8,7 @@
 
 #import <CoreBluetooth/CoreBluetooth.h>
 #import "Nickname.h"
+#include <pthread.h>
 #import "KarmaViewController.h"
 #import "TransferService.h"
 
@@ -16,11 +17,11 @@
 @property (strong, nonatomic) CBCentralManager          *centralManager;
 @property (strong, nonatomic) CBPeripheral              *discoveredPeripheral;
 
-@property (strong, atomic) NSMutableArray            *discoveredPeripherals;
-@property (strong, atomic) NSMutableArray            *discoveredPeripheralsLastSeen;
-
 @property (weak, nonatomic) IBOutlet UILabel            *nicknameLabel;
 @property (weak, nonatomic) IBOutlet UITableView        *karmaTableView;
+
+@property (strong, atomic) NSMutableArray *discoveredPeripherals;
+@property (strong, atomic) NSMutableArray *discoveredPeripheralsLastSeen;
 
 @property (strong, nonatomic) CBPeripheralManager       *peripheralManager;
 @property (strong, nonatomic) CBMutableCharacteristic   *transferCharacteristic;
@@ -74,7 +75,19 @@
     _karmaTableView.dataSource = self;
     _karmaTableView.delegate = self;
     
+    [[NSNotificationCenter defaultCenter] addObserver: self
+                                             selector: @selector(applicationDidEnterBackground)
+                                                 name: @"applicationDidEnterBackground"
+                                               object: nil];
+    
     [self removeExpiredPeripherals];
+}
+
+- (void)applicationDidEnterBackground
+{
+    NSLog(@"applicationDidEnterBackground");
+    [_discoveredPeripherals removeAllObjects];
+    [_discoveredPeripheralsLastSeen removeAllObjects];
 }
 
 - (void)didReceiveMemoryWarning
@@ -95,7 +108,7 @@
                 lastSeen = _discoveredPeripheralsLastSeen[i];
                 secondsBetween = [[NSDate date] timeIntervalSinceDate:lastSeen];
                 
-                if (secondsBetween >= 5) {
+                if (secondsBetween >= 1) {
                     NSLog(@"Deleted %@", _discoveredPeripherals[i]);
                     [_discoveredPeripherals removeObjectAtIndex:i];
                     [_discoveredPeripheralsLastSeen removeObjectAtIndex:i];
@@ -103,7 +116,7 @@
                 }
             }
             
-            sleep(1);
+            sleep(1); // decrease CPU usage from ~100% to ~5%
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 [_karmaTableView reloadData];
