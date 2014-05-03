@@ -14,6 +14,8 @@
 
 @interface KarmaViewController () <CBCentralManagerDelegate, CBPeripheralManagerDelegate, UITableViewDataSource, UITableViewDelegate>
 
+// TODO - reorganize variables
+
 @property (strong, nonatomic) CBCentralManager          *centralManager;
 @property (strong, nonatomic) CBPeripheral              *discoveredPeripheral;
 
@@ -40,6 +42,8 @@
 @property (strong, nonatomic) NSMutableData         *data;
 
 @property(strong, nonatomic) NSNumber *num;
+
+@property pthread_mutex_t discoveredPeripheralsMutex;
 
 @end
 
@@ -86,8 +90,13 @@
 - (void)applicationDidEnterBackground
 {
     NSLog(@"applicationDidEnterBackground");
-    [_discoveredPeripherals removeAllObjects];
-    [_discoveredPeripheralsLastSeen removeAllObjects];
+    
+    pthread_mutex_lock(&_discoveredPeripheralsMutex);
+    
+        [_discoveredPeripherals removeAllObjects];
+        [_discoveredPeripheralsLastSeen removeAllObjects];
+    
+    pthread_mutex_unlock(&_discoveredPeripheralsMutex);
 }
 
 - (void)didReceiveMemoryWarning
@@ -103,18 +112,22 @@
             NSDate* lastSeen;
             NSTimeInterval secondsBetween;
             
-            for (int i = 0; i < [_discoveredPeripherals count]; i++)
-            {
-                lastSeen = _discoveredPeripheralsLastSeen[i];
-                secondsBetween = [[NSDate date] timeIntervalSinceDate:lastSeen];
+            pthread_mutex_lock(&_discoveredPeripheralsMutex);
+            
+                for (int i = 0; i < [_discoveredPeripherals count]; i++)
+                {
+                    lastSeen = _discoveredPeripheralsLastSeen[i];
+                    secondsBetween = [[NSDate date] timeIntervalSinceDate:lastSeen];
                 
-                if (secondsBetween >= 1) {
-                    NSLog(@"Deleted %@", _discoveredPeripherals[i]);
-                    [_discoveredPeripherals removeObjectAtIndex:i];
-                    [_discoveredPeripheralsLastSeen removeObjectAtIndex:i];
-                    i--;
+                    if (secondsBetween >= 1) {
+                        NSLog(@"Deleted %@", _discoveredPeripherals[i]);
+                        [_discoveredPeripherals removeObjectAtIndex:i];
+                        [_discoveredPeripheralsLastSeen removeObjectAtIndex:i];
+                        i--;
+                    }
                 }
-            }
+            
+            pthread_mutex_unlock(&_discoveredPeripheralsMutex);
             
             sleep(1); // decrease CPU usage from ~100% to ~5%
             
@@ -140,9 +153,12 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"KarmaTableCell" forIndexPath:indexPath];
+    pthread_mutex_lock(&_discoveredPeripheralsMutex);
     
-    cell.textLabel.text = ((NSString*)([_discoveredPeripherals objectAtIndex:indexPath.row]));
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"KarmaTableCell" forIndexPath:indexPath];
+        cell.textLabel.text = ((NSString*)([_discoveredPeripherals objectAtIndex:indexPath.row]));
+    
+    pthread_mutex_unlock(&_discoveredPeripheralsMutex);
     
     return cell;
 }
@@ -197,17 +213,21 @@
     NSDate* curDate = [NSDate date];
     NSString* peripheralName = advertisementData[@"kCBAdvDataLocalName"];
     
-//    NSLog(@"Discovered peripheral %@", peripheralName);
+    pthread_mutex_lock(&_discoveredPeripheralsMutex);
     
-    NSUInteger i = [_discoveredPeripherals indexOfObject:peripheralName];
+        NSUInteger i = [_discoveredPeripherals indexOfObject:peripheralName];
+        
+        if (i == NSNotFound) {
+            NSLog(@"Discovered peripheral %@", peripheralName);
+            
+            [_discoveredPeripherals addObject:peripheralName];
+            [_discoveredPeripheralsLastSeen addObject:curDate];
+            [_karmaTableView reloadData];
+        } else {
+            _discoveredPeripheralsLastSeen[i] = curDate;
+        }
     
-    if (i == NSNotFound) {
-        [_discoveredPeripherals addObject:peripheralName];
-        [_discoveredPeripheralsLastSeen addObject:curDate];
-        [_karmaTableView reloadData];
-    } else {
-        _discoveredPeripheralsLastSeen[i] = curDate;
-    }
+    pthread_mutex_unlock(&_discoveredPeripheralsMutex);
     
     return;
     
