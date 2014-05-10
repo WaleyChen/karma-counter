@@ -10,9 +10,9 @@
 
 @interface DiscoveredPeripheral : NSObject
 
-@property (atomic, readwrite) NSString  *nickname;
-@property (atomic, readwrite) NSDate    *lastSeen;
-@property (atomic, readwrite) NSNumber  *karmaToSend;
-@property (atomic, readwrite) NSString  *UUID;
+@property (atomic, readwrite) NSNumber *karmaToSend;
+@property (atomic, readwrite) NSDate   *lastSeen;
+@property (atomic, readwrite) NSString *nickname;
+@property (atomic, readwrite) NSString *UUID;
 
 @end

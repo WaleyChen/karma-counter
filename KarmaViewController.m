@@ -16,6 +16,7 @@
 
 @interface KarmaViewController () <CBCentralManagerDelegate, CBPeripheralManagerDelegate, UITableViewDataSource, UITableViewDelegate>
 
+// TODO - handle unsent karma
 // TODO - reorganize variables
 
 @property (strong, nonatomic) CBCentralManager          *centralManager;
@@ -25,8 +26,6 @@
 @property (weak, nonatomic) IBOutlet UITableView        *karmaTableView;
 
 @property (strong, atomic) NSMutableArray               *discoveredPeripherals;
-
-// handle unsent karma
 @property pthread_mutex_t                                discoveredPeripheralsMutex;
 
 // peripherals
@@ -92,6 +91,7 @@
     [self startRemoveExpiredPeripheralsTask];
     
     _num = [NSNumber numberWithInt:0];
+    
 }
 
 - (void)applicationDidEnterBackground
@@ -175,7 +175,7 @@
     NSString* nicknameOfReceiver = cell.textLabel.text;
     
     pthread_mutex_lock(&_discoveredPeripheralsMutex);
-        DiscoveredPeripheral* peripheralToSendKarma = [self discoveredPeripheralWithNickname:nicknameOfReceiver];
+    DiscoveredPeripheral* peripheralToSendKarma = [self findDiscoveredPeripheralWith :@"nickname" :nicknameOfReceiver];
     
         if (peripheralToSendKarma == nil) {
             NSLog(@"Could not find %@ in order to send karma", nicknameOfReceiver);
@@ -243,15 +243,16 @@
     
     pthread_mutex_lock(&_discoveredPeripheralsMutex);
     
-        DiscoveredPeripheral* discoveredPeripheral = [self discoveredPeripheralWithNickname:peripheralNickname];
+    DiscoveredPeripheral* discoveredPeripheral = [self findDiscoveredPeripheralWith :@"nickname" :peripheralNickname];
     
         if (discoveredPeripheral == nil) {
             NSLog(@"Discovered peripheral %@", peripheralNickname);
             
             discoveredPeripheral = [[DiscoveredPeripheral alloc] init];
-            discoveredPeripheral.nickname = peripheralNickname;
             discoveredPeripheral.lastSeen = curDate;
+            discoveredPeripheral.nickname = peripheralNickname;
             discoveredPeripheral.karmaToSend = [NSNumber numberWithInt:0];
+            discoveredPeripheral.UUID = (NSString*)[peripheral identifier];
             
             [_discoveredPeripherals addObject:discoveredPeripheral];
             
@@ -367,14 +368,8 @@
 - (void)peripheralManager:(CBPeripheralManager *)peripheral central:(CBCentral *)central didSubscribeToCharacteristic:(CBCharacteristic *)characteristic
 {
     NSLog(@"Central %@ subscribed to characteristic", [central identifier]);
-//    NSLog(@"Peripheral stops advertising.");
-//    [self.peripheralManager stopAdvertising];
-//    return;
     
-    // Get the data
-    // BK - Apple used this originally to send text.  We just want to send battery percentage.  I kept the view and just hid it for now.
-    //self.dataToSend = [self.textView.text dataUsingEncoding:NSUTF8StringEncoding];
-//    [self.textView setHidden:YES];
+    
     
     // BK - Fire up a timer that will send data at regular intervals.
     self.sendTimer = [NSTimer scheduledTimerWithTimeInterval:kSendDataInterval target:self selector:@selector(transferDataBasedOnTimer:) userInfo:nil repeats:NO];
@@ -683,13 +678,16 @@
 }
 
 #pragma mark - helper methods
-- (DiscoveredPeripheral*) discoveredPeripheralWithNickname :(NSString *)nickname {
+
+// in _discoveredPeripherals, look for (DiscoveredPeripheral*)p.{var} == object
+- (DiscoveredPeripheral*) findDiscoveredPeripheralWith :(NSString *)var :(NSObject *)object {
     DiscoveredPeripheral* peripheral = nil;
+    SEL selector = NSSelectorFromString(var);
     
     pthread_mutex_lock(&_discoveredPeripheralsMutex);
     
         for (DiscoveredPeripheral* p in _discoveredPeripherals) {
-            if ([p.nickname isEqualToString:nickname])
+            if ([[p performSelector:selector] isEqual:object])
                 peripheral = p;
         }
     
