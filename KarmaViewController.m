@@ -7,8 +7,10 @@
 //
 
 #import <CoreBluetooth/CoreBluetooth.h>
-#import "Nickname.h"
 #include <pthread.h>
+
+#import "DiscoveredPeripheral.h"
+#import "Nickname.h"
 #import "KarmaViewController.h"
 #import "TransferService.h"
 
@@ -22,10 +24,15 @@
 @property (weak, nonatomic) IBOutlet UILabel            *nicknameLabel;
 @property (weak, nonatomic) IBOutlet UITableView        *karmaTableView;
 
-@property (strong, atomic) NSMutableArray *discoveredPeripherals;
-@property (strong, atomic) NSMutableArray *discoveredPeripheralsLastSeen;
+@property (strong, atomic) NSMutableArray               *discoveredPeripherals;
 
+// handle unsent karma
+@property pthread_mutex_t                                discoveredPeripheralsMutex;
+
+// peripherals
 @property (strong, nonatomic) CBPeripheralManager       *peripheralManager;
+@property (strong, nonatomic) CBPeripheralManager       *sendKarmaManager;
+
 @property (strong, nonatomic) CBMutableCharacteristic   *transferCharacteristic;
 
 // BK - added a label to show signal strength
@@ -41,13 +48,11 @@
 @property (strong, nonatomic) CBCharacteristic      *subscribedCharacteristic;
 @property (strong, nonatomic) NSMutableData         *data;
 
-@property(strong, nonatomic) NSNumber *num;
-
-@property pthread_mutex_t discoveredPeripheralsMutex;
+@property (nonatomic, readwrite) NSNumber* num;
 
 @end
 
-#define kSendDataInterval   1.0  // BK - Let's send data every second when connected
+#define kSendDataInterval   0.15  // BK - Let's send data every second when connected
 #define NOTIFY_MTU          20 // BK - Apple set this to 20, the maximum payload size.
 
 @implementation KarmaViewController
@@ -66,12 +71,12 @@
     [super viewDidLoad];
     
     _discoveredPeripherals = [[NSMutableArray alloc] init];
-    _discoveredPeripheralsLastSeen = [[NSMutableArray alloc] init];
-    _num = [NSNumber numberWithInt:0];
     
     // bluetooth
     _centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
+
     _peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:nil];
+    _sendKarmaManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:nil];
     
     // view elements
     _nicknameLabel.text = [NSString stringWithFormat:@"%@%@", [Nickname getNickname], @"'s Karma"];
@@ -84,19 +89,16 @@
                                                  name: @"applicationDidEnterBackground"
                                                object: nil];
     
-    [self removeExpiredPeripherals];
+    [self startRemoveExpiredPeripheralsTask];
+    
+    _num = [NSNumber numberWithInt:0];
 }
 
 - (void)applicationDidEnterBackground
 {
     NSLog(@"applicationDidEnterBackground");
     
-    pthread_mutex_lock(&_discoveredPeripheralsMutex);
-    
-        [_discoveredPeripherals removeAllObjects];
-        [_discoveredPeripheralsLastSeen removeAllObjects];
-    
-    pthread_mutex_unlock(&_discoveredPeripheralsMutex);
+    [_discoveredPeripherals removeAllObjects];
 }
 
 - (void)didReceiveMemoryWarning
@@ -105,8 +107,9 @@
     // Dispose of any resources that can be recreated.
 }
 
-//
-- (void)removeExpiredPeripherals
+#pragma mark - tasks
+
+- (void)startRemoveExpiredPeripheralsTask
 {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
             NSDate* lastSeen;
@@ -116,13 +119,13 @@
             
                 for (int i = 0; i < [_discoveredPeripherals count]; i++)
                 {
-                    lastSeen = _discoveredPeripheralsLastSeen[i];
+                    lastSeen = [_discoveredPeripherals[i] lastSeen];
                     secondsBetween = [[NSDate date] timeIntervalSinceDate:lastSeen];
                 
                     if (secondsBetween >= 1) {
-                        NSLog(@"Deleted %@", _discoveredPeripherals[i]);
+                        NSLog(@"Deleted %@", [_discoveredPeripherals[i] nickname]);
+                        
                         [_discoveredPeripherals removeObjectAtIndex:i];
-                        [_discoveredPeripheralsLastSeen removeObjectAtIndex:i];
                         i--;
                     }
                 }
@@ -133,7 +136,7 @@
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 [_karmaTableView reloadData];
-                [self removeExpiredPeripherals];
+                [self startRemoveExpiredPeripheralsTask];
             });
         });
 }
@@ -153,14 +156,36 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    pthread_mutex_lock(&_discoveredPeripheralsMutex);
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"KarmaTableCell" forIndexPath:indexPath];
+    cell.textLabel.text = ((NSString*)([[_discoveredPeripherals objectAtIndex:indexPath.row] nickname]));
     
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"KarmaTableCell" forIndexPath:indexPath];
-        cell.textLabel.text = ((NSString*)([_discoveredPeripherals objectAtIndex:indexPath.row]));
+    UIButton *sendBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    sendBtn.frame = CGRectMake(0, 0, 85, 42);
+    [sendBtn setTitle:@"Send Karma" forState:UIControlStateNormal];
+    sendBtn.highlighted = true;
+    [sendBtn addTarget:self action:@selector(sendKarma:) forControlEvents:UIControlEventTouchUpInside];
     
-    pthread_mutex_unlock(&_discoveredPeripheralsMutex);
+    cell.accessoryView = sendBtn;
     
     return cell;
+}
+
+- (void) sendKarma:(UIButton *)paramSender {
+    UITableViewCell *cell = (UITableViewCell*) paramSender.superview.superview;
+    NSString* nicknameOfReceiver = cell.textLabel.text;
+    
+    pthread_mutex_lock(&_discoveredPeripheralsMutex);
+        DiscoveredPeripheral* peripheralToSendKarma = [self discoveredPeripheralWithNickname:nicknameOfReceiver];
+    
+        if (peripheralToSendKarma == nil) {
+            NSLog(@"Could not find %@ in order to send karma", nicknameOfReceiver);
+        } else {
+            peripheralToSendKarma.karmaToSend = [NSNumber numberWithInt:([peripheralToSendKarma.karmaToSend intValue] +  1)];
+            
+            NSLog(@"To send %@ karma to %@", peripheralToSendKarma.karmaToSend, nicknameOfReceiver);
+        }
+    
+    pthread_mutex_unlock(&_discoveredPeripheralsMutex);
 }
 
 #pragma mark - CBCentralManagerDelegate Methods
@@ -211,42 +236,42 @@
         return;
     
     NSDate* curDate = [NSDate date];
-    NSString* peripheralName = advertisementData[@"kCBAdvDataLocalName"];
+    NSString* peripheralNickname = advertisementData[@"kCBAdvDataLocalName"];
+    
+    if (peripheralNickname == nil)
+        return;
     
     pthread_mutex_lock(&_discoveredPeripheralsMutex);
     
-        NSUInteger i = [_discoveredPeripherals indexOfObject:peripheralName];
-        
-        if (i == NSNotFound) {
-            NSLog(@"Discovered peripheral %@", peripheralName);
+        DiscoveredPeripheral* discoveredPeripheral = [self discoveredPeripheralWithNickname:peripheralNickname];
+    
+        if (discoveredPeripheral == nil) {
+            NSLog(@"Discovered peripheral %@", peripheralNickname);
             
-            [_discoveredPeripherals addObject:peripheralName];
-            [_discoveredPeripheralsLastSeen addObject:curDate];
+            discoveredPeripheral = [[DiscoveredPeripheral alloc] init];
+            discoveredPeripheral.nickname = peripheralNickname;
+            discoveredPeripheral.lastSeen = curDate;
+            discoveredPeripheral.karmaToSend = [NSNumber numberWithInt:0];
+            
+            [_discoveredPeripherals addObject:discoveredPeripheral];
+            
             [_karmaTableView reloadData];
         } else {
-            _discoveredPeripheralsLastSeen[i] = curDate;
+            discoveredPeripheral.lastSeen = curDate;
         }
     
     pthread_mutex_unlock(&_discoveredPeripheralsMutex);
     
-    return;
-    
-        // Ok, it's in range - have we already seen it?
-        if (self.discoveredPeripheral != peripheral) {
-    
-            // Save a local copy of the peripheral, so CoreBluetooth doesn't get rid of it
-            self.discoveredPeripheral = peripheral;
-    
-            // And connect
-            NSLog(@"Connecting to peripheral %@", peripheral);
-            [self.centralManager connectPeripheral:peripheral options:nil];
-            
-            // BK - Update our connection status label.
-//            [self.connectionLabel setText:@"Yes"];
-//            [self.disconnectButton setEnabled:YES];
-//            [self.disconnectButton setAlpha:1.0];
-    
-        }
+    // Ok, it's in range - have we already seen it?
+    if (self.discoveredPeripheral != peripheral) {
+        
+        // Save a local copy of the peripheral, so CoreBluetooth doesn't get rid of it
+        self.discoveredPeripheral = peripheral;
+
+        // And connect
+        NSLog(@"Connecting to peripheral %@", peripheral);
+        [self.centralManager connectPeripheral:peripheral options:nil];
+    }
 }
 
 /** If the connection fails for whatever reason, we need to deal with it.
@@ -296,11 +321,8 @@
 
 #pragma mark - Peripheral Methods
 
-
-
-/** Required protocol method.  A full app should take care of all the possible states,
- *  but we're just waiting for to know when the CBPeripheralManager is ready
- */
+// Required protocol method.  A full app should take care of all the possible states,
+// but we're just waiting for to know when the CBPeripheralManager is ready
 - (void)peripheralManagerDidUpdateState:(CBPeripheralManager *)peripheral
 {
     // Opt out from any other state
@@ -329,12 +351,13 @@
     [self.peripheralManager addService:transferService];
     
     // BK - since we just want to start advertising right away, let's do that here, after we determine that the peripheralManager is good to go.
-    [self.peripheralManager startAdvertising:@{ CBAdvertisementDataServiceUUIDsKey : @[[CBUUID UUIDWithString:TRANSFER_SERVICE_UUID]],
-                                                CBAdvertisementDataLocalNameKey : [NSString stringWithFormat:@"%@ %@", [Nickname getNickname], _num] }];
+    // max number of characters for CBAdvertisementDataLocalNameKey is 29
+    [_peripheralManager startAdvertising:@{
+        CBAdvertisementDataServiceUUIDsKey : @[[CBUUID UUIDWithString:TRANSFER_SERVICE_UUID]],
+           CBAdvertisementDataLocalNameKey : [Nickname getNickname]
+    }];
     
 //    [self.peripheralManager stopAdvertising];
-    
-    _num = [NSNumber numberWithInt:([_num intValue] + 1)];
     
     NSLog(@"Exit peripheralManagerDidUpdateState().");
 }
@@ -343,10 +366,10 @@
  */
 - (void)peripheralManager:(CBPeripheralManager *)peripheral central:(CBCentral *)central didSubscribeToCharacteristic:(CBCharacteristic *)characteristic
 {
-    NSLog(@"Central subscribed to characteristic");
-    NSLog(@"Peripheral stops advertising.");
-    [self.peripheralManager stopAdvertising];
-    return;
+    NSLog(@"Central %@ subscribed to characteristic", [central identifier]);
+//    NSLog(@"Peripheral stops advertising.");
+//    [self.peripheralManager stopAdvertising];
+//    return;
     
     // Get the data
     // BK - Apple used this originally to send text.  We just want to send battery percentage.  I kept the view and just hid it for now.
@@ -365,7 +388,7 @@
 //    [self.batteryLabel setText:batteryLevelString];
     
     // BK - tee it up.
-    self.dataToSend = [batteryLevelString dataUsingEncoding:NSUTF8StringEncoding];
+    self.dataToSend = [@"123" dataUsingEncoding:NSUTF8StringEncoding];
     
     // Reset the index
     self.sendDataIndex = 0;
@@ -378,7 +401,7 @@
  */
 - (void)peripheralManager:(CBPeripheralManager *)peripheral central:(CBCentral *)central didUnsubscribeFromCharacteristic:(CBCharacteristic *)characteristic
 {
-    NSLog(@"Central unsubscribed from characteristic");
+    NSLog(@"Central %@ unsubscribed from characteristic", [central identifier]);
     
     // BK - Update our battery label to show we have no connection
 //    [self.batteryLabel setText:@"Waiting for Connection"];
@@ -401,7 +424,7 @@
 //    [self.batteryLabel setText:batteryLevelString];
     
     // BK - tee it up.
-    self.dataToSend = [batteryLevelString dataUsingEncoding:NSUTF8StringEncoding];
+    self.dataToSend = [@"123" dataUsingEncoding:NSUTF8StringEncoding];
     
     // Reset the index
     self.sendDataIndex = 0;
@@ -413,7 +436,6 @@
     [self.sendTimer invalidate];
     self.sendTimer = nil;
     self.sendTimer = [NSTimer scheduledTimerWithTimeInterval:kSendDataInterval target:self selector:@selector(transferDataBasedOnTimer:) userInfo:nil repeats:NO];
-    
 }
 
 /** Sends the next amount of data to the connected central
@@ -658,6 +680,22 @@
     
     // If we've got this far, we're connected, but we're not subscribed, so we just disconnect
     [self.centralManager cancelPeripheralConnection:self.discoveredPeripheral];
+}
+
+#pragma mark - helper methods
+- (DiscoveredPeripheral*) discoveredPeripheralWithNickname :(NSString *)nickname {
+    DiscoveredPeripheral* peripheral = nil;
+    
+    pthread_mutex_lock(&_discoveredPeripheralsMutex);
+    
+        for (DiscoveredPeripheral* p in _discoveredPeripherals) {
+            if ([p.nickname isEqualToString:nickname])
+                peripheral = p;
+        }
+    
+    pthread_mutex_unlock(&_discoveredPeripheralsMutex);
+    
+    return peripheral;
 }
 
 @end

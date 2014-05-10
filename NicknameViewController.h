@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface NicknameViewController : UIViewController <UITableViewDelegate, UITextFieldDelegate>
+
 @property (weak, nonatomic) IBOutlet UITextField *nicknameTextField;
 
 @end
