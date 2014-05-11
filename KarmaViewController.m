@@ -21,7 +21,6 @@
 
 @property (strong, nonatomic) CBCentralManager          *centralManager;
 @property (strong, nonatomic) NSArray                   *centralsToResendDataTo;
-@property (strong, nonatomic) CBPeripheral              *discoveredPeripheral;
 
 @property (weak, nonatomic) IBOutlet UILabel            *nicknameLabel;
 @property (weak, nonatomic) IBOutlet UITableView        *karmaTableView;
@@ -218,16 +217,6 @@
     NSLog(@"Scanning started");
 }
 
-// BK - This method allows us to force-kill the connection
--(IBAction)disconnectFromPeripheral:(id)sender {
-    
-    // You should really tell the Peripheral that you don't care anymore.  Otherwise, it will keep trying to transfer data.
-    [self.discoveredPeripheral setNotifyValue:NO forCharacteristic:_subscribedCharacteristic];
-    
-    // Now kill the connection
-    [self.centralManager cancelPeripheralConnection:self.discoveredPeripheral];
-}
-
 /** This callback comes whenever a peripheral that is advertising the TRANSFER_SERVICE_UUID is discovered.
  *  We check the RSSI, to make sure it's close enough that we're interested in it, and if it is,
  *  we start the connection process
@@ -270,7 +259,7 @@
 - (void)centralManager:(CBCentralManager *)central didFailToConnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
 {
     NSLog(@"Failed to connect to %@. (%@)", peripheral, [error localizedDescription]);
-    [self cleanup];
+    [self cleanup :peripheral];
 }
 
 /** We've connected to the peripheral, now we need to discover the services and characteristics to find the 'transfer' characteristic.
@@ -299,9 +288,7 @@
 - (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
 {
     NSLog(@"Peripheral Disconnected");
-    self.discoveredPeripheral = nil;
-    
-    [self findDiscoveredPeripheralWithUUID :peripheral.identifier.UUIDString];
+    [self deleteDiscoveredPeripheralWithUUID :peripheral.identifier.UUIDString];
     
     // We're disconnected, so start scanning again
     [self scan];
@@ -534,7 +521,7 @@
 {
     if (error) {
         NSLog(@"Error discovering services: %@", [error localizedDescription]);
-        [self cleanup];
+        [self cleanup :peripheral];
         return;
     }
     
@@ -557,7 +544,7 @@
     // Deal with errors (if any)
     if (error) {
         NSLog(@"Error discovering characteristics: %@", [error localizedDescription]);
-        [self cleanup];
+        [self cleanup :peripheral];
         return;
     }
     
@@ -646,24 +633,24 @@
  *  This cancels any subscriptions if there are any, or straight disconnects if not.
  *  (didUpdateNotificationStateForCharacteristic will cancel the connection if a subscription is involved)
  */
-- (void)cleanup
+- (void)cleanup :(CBPeripheral *)peripheral
 {
     // Don't do anything if we're not connected
-    if (!self.discoveredPeripheral.isConnected) {
+    if (!peripheral.isConnected) {
         return;
     }
     
     NSLog(@"Cleanup()");
     
     // See if we are subscribed to a characteristic on the peripheral
-    if (self.discoveredPeripheral.services != nil) {
-        for (CBService *service in self.discoveredPeripheral.services) {
+    if (peripheral.services != nil) {
+        for (CBService *service in peripheral.services) {
             if (service.characteristics != nil) {
                 for (CBCharacteristic *characteristic in service.characteristics) {
                     if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:TRANSFER_CHARACTERISTIC_UUID]]) {
                         if (characteristic.isNotifying) {
                             // It is notifying, so unsubscribe
-                            [self.discoveredPeripheral setNotifyValue:NO forCharacteristic:characteristic];
+                            [peripheral setNotifyValue:NO forCharacteristic:characteristic];
                             
                             // And we're done.
                             return;
@@ -675,12 +662,15 @@
     }
     
     // If we've got this far, we're connected, but we're not subscribed, so we just disconnect
-    [self.centralManager cancelPeripheralConnection:self.discoveredPeripheral];
-    
-    [_discoveredPeripherals removeAllObjects];
+    [self.centralManager cancelPeripheralConnection:peripheral];
 }
 
 #pragma mark - helper methods
+
+- (void) deleteDiscoveredPeripheralWithUUID :(NSString *)str {
+    DiscoveredPeripheral* discoveredPeripheral = [self findDiscoveredPeripheralWithString :@"UUID" :str];
+    [_discoveredPeripherals removeObject:discoveredPeripheral];
+}
 
 - (DiscoveredPeripheral*) findDiscoveredPeripheralWithNickname :(NSString *)str {
     return [self findDiscoveredPeripheralWithString :@"nickname" :str];
