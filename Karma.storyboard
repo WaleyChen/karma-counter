@@ -111,6 +111,7 @@
                     </view>
                     <connections>
                         <outlet property="NicknameLabel" destination="3F8-QL-SwF" id="iEj-4a-2ZD"/>
+                        <outlet property="karmaLabel" destination="3QX-e0-wrh" id="1gb-xF-4vM"/>
                         <outlet property="karmaTableView" destination="MRy-zy-0XT" id="cZH-or-zsP"/>
                     </connections>
                 </viewController>
