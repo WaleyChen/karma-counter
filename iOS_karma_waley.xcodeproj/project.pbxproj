@@ -178,14 +178,14 @@
 		D0C3F460192063C500F5FFA0 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				D0C3F45D19203CDD00F5FFA0 /* Singleton.h */,
-				D0C3F45E19203CDD00F5FFA0 /* Singleton.m */,
 				D026BF4F19119A0D005D8767 /* AppDelegate.h */,
 				D026BF5019119A0D005D8767 /* AppDelegate.m */,
 				D026BF911912CC9C005D8767 /* Karma.h */,
 				D026BF921912CC9C005D8767 /* Karma.m */,
 				D026BF8B1911C0B7005D8767 /* Nickname.h */,
 				D026BF8C1911C0B7005D8767 /* Nickname.m */,
+				D0C3F45D19203CDD00F5FFA0 /* Singleton.h */,
+				D0C3F45E19203CDD00F5FFA0 /* Singleton.m */,
 				D026BF971912F093005D8767 /* TransferService.h */,
 			);
 			name = Models;
