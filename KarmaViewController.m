@@ -11,6 +11,7 @@
 
 #import "DiscoveredPeripheral.h"
 #import "Nickname.h"
+#import "Karma.h"
 #import "KarmaViewController.h"
 #import "TransferService.h"
 
@@ -18,32 +19,28 @@
 
 // TODO - handle unsent karma
 // TODO - reorganize variables
+// TODO - closing and reopening the app causes a chrash
 
+// central related
 @property (strong, nonatomic) CBCentralManager          *centralManager;
 @property (strong, nonatomic) NSArray                   *centralsToResendDataTo;
 
-@property (weak, nonatomic) IBOutlet UILabel            *nicknameLabel;
+// IBOutlets
+@property (weak, nonatomic) IBOutlet UILabel            *karmaLabel;
 @property (weak, nonatomic) IBOutlet UITableView        *karmaTableView;
+@property (weak, nonatomic) IBOutlet UILabel            *nicknameLabel;
 
+// peripheral related
 @property (strong, atomic) NSMutableArray               *discoveredPeripherals;
 @property pthread_mutex_t                                discoveredPeripheralsMutex;
-
-// peripherals
 @property (strong, nonatomic) CBPeripheralManager       *peripheralManager;
-
 @property (strong, nonatomic) CBMutableCharacteristic   *transferCharacteristic;
 
-// BK - added a label to show signal strength
-// Note that "RSSI" is the Received Signal Strength Indicator.  To calculate a percentage, you need to know
-// how powerful your transmitter is.  I don't believe iOS or Apple tells us that yet on iOS6.
-@property (strong, nonatomic) IBOutlet UILabel          *rssiLabel;
-
+// other
 @property (strong, nonatomic) NSTimer                   *sendTimer;
-@property (strong, nonatomic) NSData                    *dataToSend;
 @property (nonatomic, readwrite) NSInteger              sendDataIndex;
 
 // BK - I cache this characteristic so that if you tap the Disconnect Button, we have some mechanism of telling the peripheral.
-@property (strong, nonatomic) CBCharacteristic      *subscribedCharacteristic;
 @property (strong, nonatomic) NSMutableData         *data;
 
 @property (nonatomic, readwrite) NSNumber* num;
@@ -54,6 +51,8 @@
 #define NOTIFY_MTU          20 // BK - Apple set this to 20, the maximum payload size.
 
 @implementation KarmaViewController
+
+#pragma mark - generic
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -68,25 +67,24 @@
 {
     [super viewDidLoad];
     
-    _discoveredPeripherals = [[NSMutableArray alloc] init];
-    
-    // bluetooth
+    // bluetooth connection related
     _centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
-
+    _discoveredPeripherals = [[NSMutableArray alloc] init];
     _peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:nil];
     
-    // view elements
-    _nicknameLabel.text = [NSString stringWithFormat:@"%@%@", [Nickname getNickname], @"'s Karma"];
+    [self startRemoveExpiredPeripheralsTask];
     
+    // view related
+    [self updateKarmaLabel];
     _karmaTableView.dataSource = self;
     _karmaTableView.delegate = self;
+    _nicknameLabel.text = [NSString stringWithFormat:@"%@%@", [Nickname nickname], @"'s Karma"];
+    [self updateKarmaLabel];
     
-    [[NSNotificationCenter defaultCenter] addObserver: self
-                                             selector: @selector(applicationDidEnterBackground)
-                                                 name: @"applicationDidEnterBackground"
-                                               object: nil];
-    
-    [self startRemoveExpiredPeripheralsTask];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationDidEnterBackground)
+                                                 name:@"applicationDidEnterBackground"
+                                               object:nil];
     
     _num = [NSNumber numberWithInt:0];
     
@@ -95,7 +93,6 @@
 - (void)applicationDidEnterBackground
 {
     NSLog(@"applicationDidEnterBackground");
-    
     [_discoveredPeripherals removeAllObjects];
 }
 
@@ -165,7 +162,7 @@
         sendBtn.frame = CGRectMake(0, 0, 85, 42);
         [sendBtn setTitle:@"Send Karma" forState:UIControlStateNormal];
         sendBtn.highlighted = true;
-        [sendBtn addTarget:self action:@selector(sendKarma:) forControlEvents:UIControlEventTouchUpInside];
+        [sendBtn addTarget:self action:@selector(sendKarmaBtnPressed:) forControlEvents:UIControlEventTouchUpInside];
     
         cell.accessoryView = sendBtn;
     }
@@ -173,7 +170,7 @@
     return cell;
 }
 
-- (void) sendKarma:(UIButton *)paramSender {
+- (void) sendKarmaBtnPressed:(UIButton *)paramSender {
     UITableViewCell *cell = (UITableViewCell*) paramSender.superview.superview;
     NSString* nicknameOfReceiver = cell.textLabel.text;
     
@@ -187,7 +184,7 @@
         discoveredPeripheral.karmaToSend = [NSNumber numberWithInt:([discoveredPeripheral.karmaToSend intValue] +  1)];
     }
     
-    [self sendData:discoveredPeripheral.central];
+    [self sendKarma:discoveredPeripheral.central karma:discoveredPeripheral.karmaToSend];
 }
 
 #pragma mark - CBCentralManagerDelegate Methods
@@ -328,8 +325,8 @@
     // BK - since we just want to start advertising right away, let's do that here, after we determine that the peripheralManager is good to go.
     // max number of characters for CBAdvertisementDataLocalNameKey is 29
     [_peripheralManager startAdvertising:@{
-        CBAdvertisementDataServiceUUIDsKey : @[[CBUUID UUIDWithString:TRANSFER_SERVICE_UUID]],
-           CBAdvertisementDataLocalNameKey : [Nickname getNickname]
+        CBAdvertisementDataServiceUUIDsKey:@[[CBUUID UUIDWithString:TRANSFER_SERVICE_UUID]],
+           CBAdvertisementDataLocalNameKey:[Nickname nickname]
     }];
     
 //    [self.peripheralManager stopAdvertising];
@@ -357,14 +354,11 @@
     // BK - Fire up a timer that will send data at regular intervals.
     // self.sendTimer = [NSTimer scheduledTimerWithTimeInterval:kSendDataInterval target:self selector:@selector(transferDataBasedOnTimer:) userInfo:nil repeats:NO];
     
-    // BK - tee it up.
-    self.dataToSend = [karmaToSend dataUsingEncoding:NSUTF8StringEncoding];
-    
     // Reset the index
     self.sendDataIndex = 0;
     
     // Start sending
-    [self sendData:central];
+    [self sendKarma:central karma:discoveredPeripheral.karmaToSend];
 }
 
 - (BOOL)updateValue:(NSData *)value forCharacteristic:(CBMutableCharacteristic *)characteristic onSubscribedCentrals:(NSArray *)centrals
@@ -393,7 +387,6 @@
 - (void)transferDataBasedOnTimer:(NSTimer *)aTimer {
     
     // BK - tee it up.
-    self.dataToSend = [@"123" dataUsingEncoding:NSUTF8StringEncoding];
     
     // Reset the index
     self.sendDataIndex = 0;
@@ -409,11 +402,14 @@
 
 /** Sends the next amount of data to the connected central
  */
-- (void)sendData:(CBCentral*)central
+- (void)sendKarma:(CBCentral*)central karma:(NSNumber*)karma
 {
     if (central == nil) {
         NSLog(@"Data not sent, central is nil");
     }
+    
+    NSString *karmaString = [karma stringValue];
+    NSData *dataToSend = [karmaString dataUsingEncoding:NSUTF8StringEncoding];
     
     // First up, check if we're meant to be sending an EOM
     static BOOL sendingEOM = NO;
@@ -440,32 +436,14 @@
         return;
     }
     
-    // We're not sending an EOM, so we're sending data
-    
-    // Is there any left to send?
-    
-    if (self.sendDataIndex >= self.dataToSend.length) {
-        
-        // No data left.  Do nothing
-        return;
-    }
-    
     // There's data left, so send until the callback fails, or we're done.
     
     BOOL didSend = YES;
     
     while (didSend) {
         
-        // Make the next chunk
-        
-        // Work out how big it should be
-        NSInteger amountToSend = self.dataToSend.length - self.sendDataIndex;
-        
-        // Can't be longer than 20 bytes
-        if (amountToSend > NOTIFY_MTU) amountToSend = NOTIFY_MTU;
-        
         // Copy out the data we want
-        NSData *chunk = [NSData dataWithBytes:self.dataToSend.bytes+self.sendDataIndex length:amountToSend];
+        NSData *chunk = dataToSend;
         
         // Send it
         didSend = [self.peripheralManager updateValue:chunk forCharacteristic:self.transferCharacteristic onSubscribedCentrals:nil];
@@ -477,30 +455,6 @@
         
         NSString *stringFromData = [[NSString alloc] initWithData:chunk encoding:NSUTF8StringEncoding];
         NSLog(@"Sent: %@", stringFromData);
-        
-        // It did send, so update our index
-        self.sendDataIndex += amountToSend;
-        
-        // Was it the last one?
-        if (self.sendDataIndex >= self.dataToSend.length) {
-            
-            // It was - send an EOM
-            
-            // Set this so if the send fails, we'll send it next time
-            sendingEOM = YES;
-            
-            // Send it
-            BOOL eomSent = [self.peripheralManager updateValue:[@"EOM" dataUsingEncoding:NSUTF8StringEncoding] forCharacteristic:self.transferCharacteristic onSubscribedCentrals:nil];
-            
-            if (eomSent) {
-                // It sent, we're all done
-                sendingEOM = NO;
-                
-                NSLog(@"Sent: EOM");
-            }
-            
-            return;
-        }
     }
 }
 
@@ -556,7 +510,6 @@
             
             // If it is, subscribe to it
             [peripheral setNotifyValue:YES forCharacteristic:characteristic];
-            _subscribedCharacteristic = characteristic;
         }
     }
     
@@ -577,26 +530,12 @@
     
     // Have we got everything we need?
     if ([stringFromData isEqualToString:@"EOM"]) {
-        
-        // We have, so show the data,
-//        [self.textview setText:[[NSString alloc] initWithData:self.data encoding:NSUTF8StringEncoding]];
-        
-        // Cancel our subscription to the characteristic
-        // BK - I took this out.  As long as we're connected, keep feeding me data.
-        //[peripheral setNotifyValue:NO forCharacteristic:characteristic];
-        
-        // and disconnect from the peripehral
-        // BK - I took this out.  Once we're connected, let's just stay connected.
-        //[self.centralManager cancelPeripheralConnection:peripheral];
+        return;
     }
     
-    // Otherwise, just add the data on to what we already have
-//    [self.data appendData:characteristic.value];
-    
-    // BK - if we want to, we can update the signal strength while connected.  Since
-    // I'm no longer advertising, RSSI updates will stop unless I do this.
-    [peripheral readRSSI];
-    [self.rssiLabel setText:[NSString stringWithFormat:@"%@ dBm", [peripheral RSSI]]];
+    NSNumber *receievedKarma = @([stringFromData intValue]);
+    [Karma add:receievedKarma];
+    [self updateKarmaLabel];
     
     // Log it
     NSLog(@"Received: %@", stringFromData);
@@ -665,7 +604,7 @@
     [self.centralManager cancelPeripheralConnection:peripheral];
 }
 
-#pragma mark - helper methods
+#pragma mark - _discoveredPeripherals helper methods
 
 - (void) deleteDiscoveredPeripheralWithUUID :(NSString *)str {
     DiscoveredPeripheral* discoveredPeripheral = [self findDiscoveredPeripheralWithString :@"UUID" :str];
@@ -702,6 +641,11 @@
     pthread_mutex_unlock(&_discoveredPeripheralsMutex);
     
     return nil;
+}
+
+#pragma - helper methods
+- (void) updateKarmaLabel {
+    _karmaLabel.text = [NSString stringWithFormat:@"%d", [[Karma karma] intValue]];
 }
 
 @end
