@@ -27,6 +27,8 @@
 		D026BF8D1911C0B7005D8767 /* Nickname.m in Sources */ = {isa = PBXBuildFile; fileRef = D026BF8C1911C0B7005D8767 /* Nickname.m */; };
 		D026BF901912376E005D8767 /* KarmaViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D026BF8F1912376E005D8767 /* KarmaViewController.m */; };
 		D026BF931912CC9C005D8767 /* Karma.m in Sources */ = {isa = PBXBuildFile; fileRef = D026BF921912CC9C005D8767 /* Karma.m */; };
+		D0C3F45C191E169400F5FFA0 /* DiscoveredPeripheral.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C3F45B191E169400F5FFA0 /* DiscoveredPeripheral.m */; };
+		D0C3F45F19203CDD00F5FFA0 /* Singleton.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C3F45E19203CDD00F5FFA0 /* Singleton.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,16 +60,20 @@
 		D026BF6519119A0D005D8767 /* iOS_karma_waleyTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "iOS_karma_waleyTests-Info.plist"; sourceTree = "<group>"; };
 		D026BF6719119A0D005D8767 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		D026BF6919119A0D005D8767 /* iOS_karma_waleyTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = iOS_karma_waleyTests.m; sourceTree = "<group>"; };
-		D026BF7B1911A02D005D8767 /* Karma.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Karma.storyboard; sourceTree = "<group>"; };
-		D026BF7D1911A966005D8767 /* NicknameViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NicknameViewController.h; sourceTree = "<group>"; };
-		D026BF7E1911A966005D8767 /* NicknameViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NicknameViewController.m; sourceTree = "<group>"; };
+		D026BF7B1911A02D005D8767 /* Karma.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Karma.storyboard; path = ../Karma.storyboard; sourceTree = "<group>"; };
+		D026BF7D1911A966005D8767 /* NicknameViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NicknameViewController.h; path = ../NicknameViewController.h; sourceTree = "<group>"; };
+		D026BF7E1911A966005D8767 /* NicknameViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NicknameViewController.m; path = ../NicknameViewController.m; sourceTree = "<group>"; };
 		D026BF8B1911C0B7005D8767 /* Nickname.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Nickname.h; sourceTree = "<group>"; };
 		D026BF8C1911C0B7005D8767 /* Nickname.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Nickname.m; sourceTree = "<group>"; };
-		D026BF8E1912376E005D8767 /* KarmaViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KarmaViewController.h; sourceTree = "<group>"; };
-		D026BF8F1912376E005D8767 /* KarmaViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KarmaViewController.m; sourceTree = "<group>"; };
+		D026BF8E1912376E005D8767 /* KarmaViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KarmaViewController.h; path = ../KarmaViewController.h; sourceTree = "<group>"; };
+		D026BF8F1912376E005D8767 /* KarmaViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KarmaViewController.m; path = ../KarmaViewController.m; sourceTree = "<group>"; };
 		D026BF911912CC9C005D8767 /* Karma.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Karma.h; sourceTree = "<group>"; };
 		D026BF921912CC9C005D8767 /* Karma.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Karma.m; sourceTree = "<group>"; };
 		D026BF971912F093005D8767 /* TransferService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TransferService.h; sourceTree = "<group>"; };
+		D0C3F45A191E169400F5FFA0 /* DiscoveredPeripheral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DiscoveredPeripheral.h; path = ../DiscoveredPeripheral.h; sourceTree = "<group>"; };
+		D0C3F45B191E169400F5FFA0 /* DiscoveredPeripheral.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DiscoveredPeripheral.m; path = ../DiscoveredPeripheral.m; sourceTree = "<group>"; };
+		D0C3F45D19203CDD00F5FFA0 /* Singleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Singleton.h; path = ../Singleton.h; sourceTree = "<group>"; };
+		D0C3F45E19203CDD00F5FFA0 /* Singleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Singleton.m; path = ../Singleton.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,11 +105,6 @@
 		D026BF3219119A0D005D8767 = {
 			isa = PBXGroup;
 			children = (
-				D026BF7B1911A02D005D8767 /* Karma.storyboard */,
-				D026BF7D1911A966005D8767 /* NicknameViewController.h */,
-				D026BF7E1911A966005D8767 /* NicknameViewController.m */,
-				D026BF8E1912376E005D8767 /* KarmaViewController.h */,
-				D026BF8F1912376E005D8767 /* KarmaViewController.m */,
 				D026BF4619119A0D005D8767 /* iOS_karma_waley */,
 				D026BF6319119A0D005D8767 /* iOS_karma_waleyTests */,
 				D026BF3D19119A0D005D8767 /* Frameworks */,
@@ -135,15 +136,11 @@
 		D026BF4619119A0D005D8767 /* iOS_karma_waley */ = {
 			isa = PBXGroup;
 			children = (
-				D026BF4F19119A0D005D8767 /* AppDelegate.h */,
-				D026BF5019119A0D005D8767 /* AppDelegate.m */,
-				D026BF5519119A0D005D8767 /* Images.xcassets */,
+				D0C3F461192063DE00F5FFA0 /* Controllers */,
+				D0C3F460192063C500F5FFA0 /* Models */,
 				D026BF5219119A0D005D8767 /* iOS_karma_waley.xcdatamodeld */,
-				D026BF911912CC9C005D8767 /* Karma.h */,
-				D026BF921912CC9C005D8767 /* Karma.m */,
-				D026BF8B1911C0B7005D8767 /* Nickname.h */,
-				D026BF8C1911C0B7005D8767 /* Nickname.m */,
-				D026BF971912F093005D8767 /* TransferService.h */,
+				D026BF7B1911A02D005D8767 /* Karma.storyboard */,
+				D026BF5519119A0D005D8767 /* Images.xcassets */,
 				D026BF4719119A0D005D8767 /* Supporting Files */,
 			);
 			path = iOS_karma_waley;
@@ -176,6 +173,35 @@
 				D026BF6619119A0D005D8767 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D0C3F460192063C500F5FFA0 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				D0C3F45D19203CDD00F5FFA0 /* Singleton.h */,
+				D0C3F45E19203CDD00F5FFA0 /* Singleton.m */,
+				D026BF4F19119A0D005D8767 /* AppDelegate.h */,
+				D026BF5019119A0D005D8767 /* AppDelegate.m */,
+				D026BF911912CC9C005D8767 /* Karma.h */,
+				D026BF921912CC9C005D8767 /* Karma.m */,
+				D026BF8B1911C0B7005D8767 /* Nickname.h */,
+				D026BF8C1911C0B7005D8767 /* Nickname.m */,
+				D026BF971912F093005D8767 /* TransferService.h */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		D0C3F461192063DE00F5FFA0 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				D0C3F45A191E169400F5FFA0 /* DiscoveredPeripheral.h */,
+				D0C3F45B191E169400F5FFA0 /* DiscoveredPeripheral.m */,
+				D026BF8E1912376E005D8767 /* KarmaViewController.h */,
+				D026BF8F1912376E005D8767 /* KarmaViewController.m */,
+				D026BF7D1911A966005D8767 /* NicknameViewController.h */,
+				D026BF7E1911A966005D8767 /* NicknameViewController.m */,
+			);
+			name = Controllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -278,6 +304,8 @@
 				D026BF5119119A0D005D8767 /* AppDelegate.m in Sources */,
 				D026BF931912CC9C005D8767 /* Karma.m in Sources */,
 				D026BF4D19119A0D005D8767 /* main.m in Sources */,
+				D0C3F45C191E169400F5FFA0 /* DiscoveredPeripheral.m in Sources */,
+				D0C3F45F19203CDD00F5FFA0 /* Singleton.m in Sources */,
 				D026BF5419119A0D005D8767 /* iOS_karma_waley.xcdatamodeld in Sources */,
 				D026BF8D1911C0B7005D8767 /* Nickname.m in Sources */,
 			);
