@@ -9,12 +9,12 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-
 @interface Karma : NSManagedObject
 
 @property (nonatomic, retain) NSNumber * karma;
 
-+ (NSNumber*)getKarma;
-+ (void)addKarma:(NSNumber *)karmaToAdd;
++ (void)add:(NSNumber *)karma;
++ (NSNumber*)karma;
++ (void)setKarma:(NSNumber *)karma;
 
 @end
