@@ -14,6 +14,7 @@
 #import "Karma.h"
 #import "KarmaViewController.h"
 #import "TransferService.h"
+#import "UIView+Toast.h"
 
 @interface KarmaViewController () <CBCentralManagerDelegate, CBPeripheralManagerDelegate, UITableViewDataSource, UITableViewDelegate>
 
@@ -95,7 +96,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(applicationDidEnterBackground)
                                                  name:@"applicationWillEnterForeground"
-                                               object:nil];    
+                                               object:nil];
 }
 
 - (void)applicationDidEnterBackground {
@@ -393,15 +394,6 @@
     }
     discoveredPeripheral.central = central;
     [_karmaTableView reloadData];
-    
-    NSString* karmaToSend = [NSString stringWithFormat:@"%d", discoveredPeripheral.karmaToSend.intValue];
-    discoveredPeripheral.karmaToSend = [NSNumber numberWithInt:0];
-    
-    // Reset the index
-    self.sendDataIndex = 0;
-    
-    // Start sending
-    [self sendKarma:central karma:discoveredPeripheral.karmaToSend];
 }
 
 - (BOOL)updateValue:(NSData *)value forCharacteristic:(CBMutableCharacteristic *)characteristic onSubscribedCentrals:(NSArray *)centrals
@@ -613,6 +605,13 @@
     NSNumber *receievedKarma = @([stringFromData intValue]);
     [Karma add:receievedKarma];
     [self updateKarmaLabel];
+    
+    DiscoveredPeripheral *discoveredPeripheral = [self findDiscoveredPeripheralWithUUID:peripheral.identifier.UUIDString];
+    NSString *msg = [NSString stringWithFormat:@"%@ sent karma!", discoveredPeripheral.nickname];
+    
+    [self.view makeToast:msg
+                duration:0.5
+                position:@"center"];
     
     // Log it
     NSLog(@"Received: %@", stringFromData);

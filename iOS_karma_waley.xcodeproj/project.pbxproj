@@ -29,6 +29,8 @@
 		D026BF931912CC9C005D8767 /* Karma.m in Sources */ = {isa = PBXBuildFile; fileRef = D026BF921912CC9C005D8767 /* Karma.m */; };
 		D0C3F45C191E169400F5FFA0 /* DiscoveredPeripheral.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C3F45B191E169400F5FFA0 /* DiscoveredPeripheral.m */; };
 		D0C3F45F19203CDD00F5FFA0 /* Singleton.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C3F45E19203CDD00F5FFA0 /* Singleton.m */; };
+		D0C3F464192327B900F5FFA0 /* UIView+Toast.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C3F463192327B900F5FFA0 /* UIView+Toast.m */; };
+		D0C3F4661923280500F5FFA0 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0C3F4651923280500F5FFA0 /* QuartzCore.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -74,6 +76,9 @@
 		D0C3F45B191E169400F5FFA0 /* DiscoveredPeripheral.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DiscoveredPeripheral.m; path = ../DiscoveredPeripheral.m; sourceTree = "<group>"; };
 		D0C3F45D19203CDD00F5FFA0 /* Singleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Singleton.h; path = ../Singleton.h; sourceTree = "<group>"; };
 		D0C3F45E19203CDD00F5FFA0 /* Singleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Singleton.m; path = ../Singleton.m; sourceTree = "<group>"; };
+		D0C3F462192327B900F5FFA0 /* UIView+Toast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Toast.h"; sourceTree = "<group>"; };
+		D0C3F463192327B900F5FFA0 /* UIView+Toast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Toast.m"; sourceTree = "<group>"; };
+		D0C3F4651923280500F5FFA0 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +86,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D0C3F4661923280500F5FFA0 /* QuartzCore.framework in Frameworks */,
 				D026BF4119119A0D005D8767 /* CoreGraphics.framework in Frameworks */,
 				D026BF4519119A0D005D8767 /* CoreData.framework in Frameworks */,
 				D026BF4319119A0D005D8767 /* UIKit.framework in Frameworks */,
@@ -124,6 +130,7 @@
 		D026BF3D19119A0D005D8767 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D0C3F4651923280500F5FFA0 /* QuartzCore.framework */,
 				D026BF3E19119A0D005D8767 /* Foundation.framework */,
 				D026BF4019119A0D005D8767 /* CoreGraphics.framework */,
 				D026BF4219119A0D005D8767 /* UIKit.framework */,
@@ -186,6 +193,8 @@
 				D026BF8C1911C0B7005D8767 /* Nickname.m */,
 				D0C3F45D19203CDD00F5FFA0 /* Singleton.h */,
 				D0C3F45E19203CDD00F5FFA0 /* Singleton.m */,
+				D0C3F462192327B900F5FFA0 /* UIView+Toast.h */,
+				D0C3F463192327B900F5FFA0 /* UIView+Toast.m */,
 				D026BF971912F093005D8767 /* TransferService.h */,
 			);
 			name = Models;
@@ -304,6 +313,7 @@
 				D026BF5119119A0D005D8767 /* AppDelegate.m in Sources */,
 				D026BF931912CC9C005D8767 /* Karma.m in Sources */,
 				D026BF4D19119A0D005D8767 /* main.m in Sources */,
+				D0C3F464192327B900F5FFA0 /* UIView+Toast.m in Sources */,
 				D0C3F45C191E169400F5FFA0 /* DiscoveredPeripheral.m in Sources */,
 				D0C3F45F19203CDD00F5FFA0 /* Singleton.m in Sources */,
 				D026BF5419119A0D005D8767 /* iOS_karma_waley.xcdatamodeld in Sources */,
@@ -428,6 +438,7 @@
 				GCC_PREFIX_HEADER = "iOS_karma_waley/iOS_karma_waley-Prefix.pch";
 				INFOPLIST_FILE = "iOS_karma_waley/iOS_karma_waley-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
@@ -443,6 +454,7 @@
 				GCC_PREFIX_HEADER = "iOS_karma_waley/iOS_karma_waley-Prefix.pch";
 				INFOPLIST_FILE = "iOS_karma_waley/iOS_karma_waley-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
