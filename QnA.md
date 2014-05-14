@@ -1,16 +1,18 @@
 What do you think are the greatest risk areas in completing this project?
-
+Since the iPhone can only pair through Bluetooth with only 1 other device at a time and 
+creating a bluetooth connection itself is extra overhead, I can't imagine the app being capable of sending karma 
+in real time since it's likely to be slow from having to constantly establish new connections in order to send 
+and receive karma. The question then becomes can karma be sent in near real-time? If not, is the app still worth
+making then?
 
 Name two or three features that could be added to this project to improve the user experience.
 Be able to specify how much karma to send.
 Be able to see the history of karma sent and received.
 
 Name two or three limitations of the described product that might cause problems if it were released publicly.
-How fast and well does the app work when the app is receiving karma from multiple people at the same time?
-How fast and well does the app work when the app is constantly receiving karma from a person who is different from the person I'm constantly sending karma to?
-
-Since the iPhone can only pair with 1 other device at a time and creating a bluetooth connection is extra overhead,
-I can't imagine the app being capable of sending karma in real time since it's likely to be slow from having to constantly establish new connections in order to send and receive karma.
+How fast and well does the app work when the app is receiving karma from and sending karma to multiple people 
+at the same time?
+How well does the app work at scale e.g. hundrends of devices? That's difficult to test and replicate.
 
 How long did this assignment take?
 ~50 hours.
