@@ -18,14 +18,6 @@
 
 @interface KarmaViewController () <CBCentralManagerDelegate, CBPeripheralManagerDelegate, UITableViewDataSource, UITableViewDelegate>
 
-// TODO - handle unsent karma
-// TODO - reorganize variables
-// TODO - closing and reopening the app causes a chrash
-// putting the app in the background and restoring the app, can no longer send karma
-
-// If the user clicks Send Karma, you tell the device belonging to that user to increment their Karma Count.
-// If you receive a notification to increment your Karma, you display a dialog indicating who sent you the Karma (using local notifications if the application is in the background).
-
 // central related
 @property (strong, nonatomic) CBCentralManager          *centralManager;
 @property (strong, nonatomic) NSArray                   *centralsToResendDataTo;
@@ -41,25 +33,16 @@
 @property (strong, nonatomic) CBPeripheralManager       *peripheralManager;
 @property (strong, nonatomic) CBMutableCharacteristic   *transferCharacteristic;
 
-// other
-@property (strong, nonatomic) NSTimer                   *sendTimer;
-@property (nonatomic, readwrite) NSInteger              sendDataIndex;
-
-// BK - I cache this characteristic so that if you tap the Disconnect Button, we have some mechanism of telling the peripheral.
-@property( strong, nonatomic) CBCharacteristic      *subscribedCharacteristic;
-
-@property (strong, nonatomic) NSMutableData         *data;
-
-@property (nonatomic, readwrite) NSNumber* num;
-
 @end
-
-#define kSendDataInterval   0.25  // BK - Let's send data every second when connected
-#define NOTIFY_MTU          20 // BK - Apple set this to 20, the maximum payload size.
 
 @implementation KarmaViewController
 
 #pragma mark - generic
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -99,35 +82,33 @@
                                                object:nil];
 }
 
+#pragma mark - notfication handling
+
 - (void)applicationDidEnterBackground {
     NSLog(@"applicationDidEnterBackground");
-    
     [self disconnectAndRemoveAllPeripherals];
 }
 
 - (void)applicationWillEnterForeground {
     NSLog(@"applicationWillEnterForeground");
-    [_karmaTableView reloadData];
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 #pragma mark - tasks
 
-- (void)startRemoveExpiredPeripheralsTask
-{
+// this task is responsible for detecting when other KarmaCounters/peripherals are no longer in bluetooth range
+// peripherals are no longer in range when the last time we've seen the peripharal is >= 1 second
+
+// note that peripherals broadcast at about 50 times/second and
+// when we receive a broadcast from another KarmaCounter didDiscoverPeripheral() is called and
+// didDiscoverPeripheral() updates the time we last received a broadcast from the peripheral
+- (void)startRemoveExpiredPeripheralsTask {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
             NSDate* lastSeen;
             NSTimeInterval secondsBetween;
             
             pthread_mutex_lock(&_discoveredPeripheralsMutex);
             
-                for (int i = 0; i < [_discoveredPeripherals count]; i++)
-                {
+                for (int i = 0; i < [_discoveredPeripherals count]; i++) {
                     lastSeen = [_discoveredPeripherals[i] lastSeen];
                     secondsBetween = [[NSDate date] timeIntervalSinceDate:lastSeen];
                 
@@ -144,7 +125,7 @@
             
             pthread_mutex_unlock(&_discoveredPeripheralsMutex);
             
-            sleep(1); // decrease CPU usage from ~100% to ~5%
+            sleep(1); // sleep in order to not hog the CPU, this decreases the CPU usage from ~100% to ~5%
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 [_karmaTableView reloadData];
@@ -156,34 +137,31 @@
 
 #pragma mark - karmaTableView Methods
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return [_discoveredPeripherals count];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     DiscoveredPeripheral* discoveredPeripheral = _discoveredPeripherals[indexPath.row];
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"KarmaTableCell" forIndexPath:indexPath];
     cell.textLabel.text = discoveredPeripheral.nickname;
     
-    // render the "Send Karma" button if the peripheral has a central object to send karma to
+    // render the "Send Karma" button if we're able to send karma
+    // we're able to send karma when the peripheral has a central object to send karma to
     if (discoveredPeripheral.central != nil) {
         UIButton *sendBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        
         sendBtn.frame = CGRectMake(0, 0, 85, 42);
         [sendBtn setTitle:@"Send Karma" forState:UIControlStateNormal];
         sendBtn.highlighted = true;
         [sendBtn addTarget:self action:@selector(sendKarmaBtnPressed:) forControlEvents:UIControlEventTouchUpInside];
     
         cell.accessoryView = sendBtn;
-    } else { // else render please wait
-        
     }
         
     return cell;
@@ -196,7 +174,7 @@
     DiscoveredPeripheral* discoveredPeripheral = [self findDiscoveredPeripheralWithNickname :nicknameOfReceiver];
     
     if (discoveredPeripheral == nil) {
-        NSLog(@"Could not find %@ in order to send karma", nicknameOfReceiver);
+        NSLog(@"Failure: Could not find %@ in order to send karma", nicknameOfReceiver);
         return;
     }
     
@@ -211,8 +189,7 @@
  *  In this instance, we're just using it to wait for CBCentralManagerStatePoweredOn, which indicates
  *  the Central is ready to be used.
  */
-- (void)centralManagerDidUpdateState:(CBCentralManager *)central
-{
+- (void)centralManagerDidUpdateState:(CBCentralManager *)central {
     // In a real app, you'd deal with all the states correctly
     if (central.state != CBCentralManagerStatePoweredOn)
         return;
@@ -223,8 +200,7 @@
 
 /** Scan for peripherals - specifically for our service's 128bit CBUUID
  */
-- (void)scan
-{
+- (void)scan {
     [self.centralManager scanForPeripheralsWithServices:@[[CBUUID UUIDWithString:TRANSFER_SERVICE_UUID]]
                                                 options:@{ CBCentralManagerScanOptionAllowDuplicatesKey : @YES }];
     
@@ -235,17 +211,15 @@
  *  We check the RSSI, to make sure it's close enough that we're interested in it, and if it is,
  *  we start the connection process
  */
-- (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI
-{
+- (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI {
     // Reject any where the value is above reasonable range or is too low to be close enough (Close is around -22dB)
     if (!(-45 <= RSSI.integerValue && RSSI.integerValue <= -15))
         return;
     
     NSDate* curDate = [NSDate date];
     NSString* peripheralNickname = advertisementData[@"kCBAdvDataLocalName"];
-    NSString* peripheralUUID = peripheral.identifier.UUIDString;
     
-    DiscoveredPeripheral* discoveredPeripheral = [self findDiscoveredPeripheralWithUUID :peripheralUUID];
+    DiscoveredPeripheral* discoveredPeripheral = [self findCorrespondingDiscoveredPeripheral:peripheral];
     
     if (discoveredPeripheral == nil) {
         NSLog(@"Discovered peripheral %@", peripheralNickname);
@@ -255,7 +229,7 @@
         discoveredPeripheral.lastSeen = curDate;
         discoveredPeripheral.nickname = peripheralNickname;
         discoveredPeripheral.peripheral = peripheral;
-        discoveredPeripheral.UUID = peripheralUUID;
+        discoveredPeripheral.UUID = peripheral.identifier.UUIDString;
             
         [_discoveredPeripherals addObject:discoveredPeripheral];
         
@@ -270,30 +244,18 @@
 
 /** If the connection fails for whatever reason, we need to deal with it.
  */
-- (void)centralManager:(CBCentralManager *)central didFailToConnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
-{
+- (void)centralManager:(CBCentralManager *)central didFailToConnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
     NSLog(@"Failed to connect to %@. (%@)", peripheral, [error localizedDescription]);
     
-    // set connection state of discovered peripheral
-    // have the row cell say "connection failed"
-//    DiscoveredPeripheral* discoveredPeripheral = 
-    
-    [self disconnectAndRemoveAllPeripherals];
-//    [self cleanup :peripheral];
-    
-//    [self scan]; // restart the connection process
+    [self deleteDiscoveredPeripheralWithUUID:peripheral.identifier.UUIDString];
 }
 
 /** We've connected to the peripheral, now we need to discover the services and characteristics to find the 'transfer' characteristic.
  */
-- (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral
-{
+- (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
     NSLog(@"Connection established.");
     NSLog(@"Peripheral Connected");
-    
-    // Clear the data that we may already have
-    [self.data setLength:0];
-    
+
     // Make sure we get the discovery callbacks
     peripheral.delegate = self;
     
@@ -303,13 +265,10 @@
 
 /** Once the disconnection happens, we need to clean up our local copy of the peripheral
  */
-- (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
-{
+- (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
     NSLog(@"Peripheral Disconnected");
-    [self deleteDiscoveredPeripheralWithUUID :peripheral.identifier.UUIDString];
     
-    // We're disconnected, so start scanning again
-    [self scan];
+    [self deleteDiscoveredPeripheralWithUUID:peripheral.identifier.UUIDString];
 }
 
 #pragma mark - Peripheral Methods
@@ -317,9 +276,8 @@
 - (void)disconnectAndRemoveAllPeripherals {
     pthread_mutex_lock(&_discoveredPeripheralsMutex);
     
-        for (DiscoveredPeripheral* discoveredPeripheral in _discoveredPeripherals) {
+        for (DiscoveredPeripheral* discoveredPeripheral in _discoveredPeripherals)
             [self disconnectPeripheral:discoveredPeripheral.peripheral];
-        }
     
         [_discoveredPeripherals removeAllObjects];
     
@@ -329,18 +287,18 @@
 }
 
 - (void)disconnectPeripheral:(CBPeripheral *)peripheral {
-    DiscoveredPeripheral *discoveredPeripheral = [self findDiscoveredPeripheralWithUUID:peripheral.identifier.UUIDString];
+    DiscoveredPeripheral *discoveredPeripheral = [self findCorrespondingDiscoveredPeripheral:peripheral];
     
     if (discoveredPeripheral != nil && discoveredPeripheral.subscribedCharacteristic != nil)
         [peripheral setNotifyValue:NO forCharacteristic:discoveredPeripheral.subscribedCharacteristic];
     
-    [self.centralManager cancelPeripheralConnection:peripheral];
+    if (peripheral != nil)
+        [self.centralManager cancelPeripheralConnection:peripheral];
 }
 
 // Required protocol method.  A full app should take care of all the possible states,
 // but we're just waiting for to know when the CBPeripheralManager is ready
-- (void)peripheralManagerDidUpdateState:(CBPeripheralManager *)peripheral
-{
+- (void)peripheralManagerDidUpdateState:(CBPeripheralManager *)peripheral {
     // Opt out from any other state
     if (peripheral.state != CBPeripheralManagerStatePoweredOn)
         return;
@@ -373,15 +331,12 @@
            CBAdvertisementDataLocalNameKey:[Nickname nickname]
     }];
     
-//    [self.peripheralManager stopAdvertising];
-    
     NSLog(@"Exit peripheralManagerDidUpdateState().");
 }
 
 /** Catch when someone subscribes to our characteristic
  */
-- (void)peripheralManager:(CBPeripheralManager *)peripheral central:(CBCentral *)central didSubscribeToCharacteristic:(CBCharacteristic *)characteristic
-{
+- (void)peripheralManager:(CBPeripheralManager *)peripheral central:(CBCentral *)central didSubscribeToCharacteristic:(CBCharacteristic *)characteristic {
     NSString* centralUUID = [central identifier].UUIDString;
     
     NSLog(@"Central with UUID of %@ subscribed to characteristic", centralUUID);
@@ -392,178 +347,77 @@
         NSLog(@"Could not find peripheral with the UUID %@", centralUUID);
         return;
     }
+    
     discoveredPeripheral.central = central;
     [_karmaTableView reloadData];
 }
 
-- (BOOL)updateValue:(NSData *)value forCharacteristic:(CBMutableCharacteristic *)characteristic onSubscribedCentrals:(NSArray *)centrals
-{
-    
-    
+- (BOOL)updateValue:(NSData *)value forCharacteristic:(CBMutableCharacteristic *)characteristic onSubscribedCentrals:(NSArray *)centrals {
     return YES;
 }
 
 /** Recognise when the central unsubscribes
  */
-- (void)peripheralManager:(CBPeripheralManager *)peripheral central:(CBCentral *)central didUnsubscribeFromCharacteristic:(CBCharacteristic *)characteristic
-{
+- (void)peripheralManager:(CBPeripheralManager *)peripheral central:(CBCentral *)central didUnsubscribeFromCharacteristic:(CBCharacteristic *)characteristic {
     NSLog(@"Central %@ unsubscribed from characteristic", [central identifier]);
-    
-    // BK - Update our battery label to show we have no connection
-//    [self.batteryLabel setText:@"Waiting for Connection"];
-    
-    // BK - Kill our timer
-    [self.sendTimer invalidate];
-    self.sendTimer =  nil;
-    
-}
-
-// BK - I added this method for sending timed data
-- (void)transferDataBasedOnTimer:(NSTimer *)aTimer {
-    
-    // BK - tee it up.
-    
-    // Reset the index
-    self.sendDataIndex = 0;
-    
-    // Start sending
-//    [self sendData];
-    
-    // Do it all over again.
-    [self.sendTimer invalidate];
-    self.sendTimer = nil;
-//    self.sendTimer = [NSTimer scheduledTimerWithTimeInterval:kSendDataInterval target:self selector:@selector(transferDataBasedOnTimer:) userInfo:nil repeats:NO];
 }
 
 /** Sends the next amount of data to the connected central
  */
-- (void)sendKarma:(CBCentral*)central karma:(NSNumber*)karma
-{
+- (void)sendKarma:(CBCentral*)central karma:(NSNumber*)karma {
     if (central == nil) {
         NSLog(@"");
-        NSLog(@"Karma not sent since central is nil");
-        
-        // temporary
-        NSLog(@"Clearing _discoveredPeripherals");
-        
-        [self disconnectAndRemoveAllPeripherals];
-        [_karmaTableView reloadData];
+        NSLog(@"karma not sent since central is nil");
         
         return;
     }
     
-    NSString *karmaString = [karma stringValue];
-    NSData *dataToSend = [karmaString dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *dataToSend = [[karma stringValue] dataUsingEncoding:NSUTF8StringEncoding];
     
-    // First up, check if we're meant to be sending an EOM
-    static BOOL sendingEOM = NO;
-    
-    if (sendingEOM) {
-        
-        // send it
-        BOOL didSend = [self.peripheralManager updateValue:[@"EOM" dataUsingEncoding:NSUTF8StringEncoding]
-                                         forCharacteristic:self.transferCharacteristic
-                                      onSubscribedCentrals:[NSArray arrayWithObject:central]];
-        
-        // Did it send?
-        if (didSend) {
-            
-            // It did, so mark it as sent
-            sendingEOM = NO;
-            
-            NSLog(@"Sent: EOM");
-        }
-        
-//        centralsToResendDataTo = centrals;
-        
-        // It didn't send, so we'll exit and wait for peripheralManagerIsReadyToUpdateSubscribers to call sendData again
-        return;
-    }
-    
-    // There's data left, so send until the callback fails, or we're done.
-    
-    BOOL didSend = YES;
-    
-    while (didSend) {
-        
-        // Copy out the data we want
-        NSData *chunk = dataToSend;
-        
-        if (_peripheralManager == nil) {
-            NSLog(@"peripheralManager is nil.");
-            return;
-        }
-        
-        if (chunk == nil) {
-            NSLog(@"chunk is nil.");
-            return;
-        }
-        
-        if (central == nil) {
-            NSLog(@"central is nil.");
-            return;
-        }
-        
-        // Send it
-        didSend = [self.peripheralManager updateValue:chunk
-                                    forCharacteristic:_transferCharacteristic
-                                 onSubscribedCentrals:[NSArray arrayWithObject:central]];
-        
-        // If it didn't work, drop out and wait for the callback
-        if (!didSend) {
-            return;
-        }
-        
-        NSString *stringFromData = [[NSString alloc] initWithData:chunk encoding:NSUTF8StringEncoding];
-        NSLog(@"Sent: %@", stringFromData);
-    }
+    // send the karma
+    [self.peripheralManager updateValue:dataToSend
+                      forCharacteristic:_transferCharacteristic
+                   onSubscribedCentrals:[NSArray arrayWithObject:central]];
 }
 
 /** This callback comes in when the PeripheralManager is ready to send the next chunk of data.
  *  This is to ensure that packets will arrive in the order they are sent
  */
-- (void)peripheralManagerIsReadyToUpdateSubscribers:(CBPeripheralManager *)peripheral
-{
+- (void)peripheralManagerIsReadyToUpdateSubscribers:(CBPeripheralManager *)peripheral {
     NSLog(@"peripheralManagerIsReadyToUpdateSubscribers()");
-    
-    // Start sending again
-//    [self sendData _centralsToResendDataTo];
 }
 
 /** The Transfer Service was discovered
  */
-- (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error
-{
+- (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error {
     if (error) {
         NSLog(@"Error discovering services: %@", [error localizedDescription]);
-        [self cleanup :peripheral];
+        [self disconnectPeripheral:peripheral];
         return;
     }
     
     // Discover the characteristic we want...
     
     // Loop through the newly filled peripheral.services array, just in case there's more than one.
-    for (CBService *service in peripheral.services) {
+    for (CBService *service in peripheral.services)
         [peripheral discoverCharacteristics:@[[CBUUID UUIDWithString:TRANSFER_CHARACTERISTIC_UUID]] forService:service];
-    }
 }
 
 
 /** The Transfer characteristic was discovered.
  *  Once this has been found, we want to subscribe to it, which lets the peripheral know we want the data it contains
  */
-- (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error
-{
+- (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
     NSLog(@"didDiscoverCharacteristicsForService() START");
     
     // Deal with errors (if any)
     if (error) {
         NSLog(@"Error discovering characteristics: %@", [error localizedDescription]);
-        [self cleanup :peripheral];
+        [self disconnectPeripheral:peripheral];
         return;
     }
     
-    DiscoveredPeripheral *discoveredPeripheral = [self findDiscoveredPeripheralWithUUID:peripheral.identifier.UUIDString];
+    DiscoveredPeripheral *discoveredPeripheral = [self findCorrespondingDiscoveredPeripheral:peripheral];
     
     // Again, we loop through the array, just in case.
     for (CBCharacteristic *characteristic in service.characteristics) {
@@ -574,11 +428,10 @@
             // If it is, subscribe to it
             [peripheral setNotifyValue:YES forCharacteristic:characteristic];
             
-            if (discoveredPeripheral == nil) {
+            if (discoveredPeripheral == nil)
                 NSLog(@"discoveredPeripheral not set");
-            } else {
+            else
                 discoveredPeripheral.subscribedCharacteristic = characteristic;
-            }
         }
     }
     
@@ -588,21 +441,15 @@
 
 /** This callback lets us know more data has arrived via notification on the characteristic
  */
-- (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
-{
+- (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
     if (error) {
         NSLog(@"Error discovering characteristics: %@", [error localizedDescription]);
         return;
     }
     
     NSString *stringFromData = [[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding];
-    
-    // Have we got everything we need?
-    if ([stringFromData isEqualToString:@"EOM"]) {
-        return;
-    }
-    
     NSNumber *receievedKarma = @([stringFromData intValue]);
+    
     [Karma add:receievedKarma];
     [self updateKarmaLabel];
     
@@ -613,89 +460,53 @@
                 duration:0.5
                 position:@"center"];
     
-    // Log it
     NSLog(@"Received: %@", stringFromData);
 }
 
 
 /** The peripheral letting us know whether our subscribe/unsubscribe happened or not
  */
-- (void)peripheral:(CBPeripheral *)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
-{
-    if (error) {
+- (void)peripheral:(CBPeripheral *)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
+    if (error)
         NSLog(@"Error changing notification state: %@", error.localizedDescription);
-    }
     
     // Exit if it's not the transfer characteristic
-    if (![characteristic.UUID isEqual:[CBUUID UUIDWithString:TRANSFER_CHARACTERISTIC_UUID]]) {
+    if (![characteristic.UUID isEqual:[CBUUID UUIDWithString:TRANSFER_CHARACTERISTIC_UUID]])
         return;
-    }
     
     // Notification has started
-    if (characteristic.isNotifying) {
+    if (characteristic.isNotifying)
         NSLog(@"Notification began on %@", characteristic);
-    }
-    
+
     // Notification has stopped
     else {
         // so disconnect from the peripheral
         NSLog(@"Notification stopped on %@.  Disconnecting", characteristic);
+        
         [self.centralManager cancelPeripheralConnection:peripheral];
     }
 }
 
-/** Call this when things either go wrong, or you're done with the connection.
- *  This cancels any subscriptions if there are any, or straight disconnects if not.
- *  (didUpdateNotificationStateForCharacteristic will cancel the connection if a subscription is involved)
- */
-- (void)cleanup :(CBPeripheral *)peripheral
-{
-    // Don't do anything if we're not connected
-    if (!peripheral.isConnected) {
-        return;
-    }
-    
-    NSLog(@"Cleanup()");
-    
-    // See if we are subscribed to a characteristic on the peripheral
-    if (peripheral.services != nil) {
-        for (CBService *service in peripheral.services) {
-            if (service.characteristics != nil) {
-                for (CBCharacteristic *characteristic in service.characteristics) {
-                    if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:TRANSFER_CHARACTERISTIC_UUID]]) {
-                        if (characteristic.isNotifying) {
-                            // It is notifying, so unsubscribe
-                            [peripheral setNotifyValue:NO forCharacteristic:characteristic];
-                            
-                            // And we're done.
-                            return;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
-    // If we've got this far, we're connected, but we're not subscribed, so we just disconnect
-    [self.centralManager cancelPeripheralConnection:peripheral];
-}
-
 #pragma mark - _discoveredPeripherals helper methods
-
-- (void) deleteDiscoveredPeripheralWithUUID :(NSString *)str {
+- (void) deleteDiscoveredPeripheralWithUUID:(NSString *)str {
     DiscoveredPeripheral* discoveredPeripheral = [self findDiscoveredPeripheralWithString :@"UUID" :str];
+    [self disconnectPeripheral:discoveredPeripheral.peripheral];
     [_discoveredPeripherals removeObject:discoveredPeripheral];
 }
 
-- (DiscoveredPeripheral*) findDiscoveredPeripheralWithNickname :(NSString *)str {
+- (DiscoveredPeripheral*) findCorrespondingDiscoveredPeripheral:(CBPeripheral *)correspondingPeripheral {
+    return [self findDiscoveredPeripheralWithUUID:correspondingPeripheral.identifier.UUIDString];
+}
+
+- (DiscoveredPeripheral*) findDiscoveredPeripheralWithNickname:(NSString *)str {
     return [self findDiscoveredPeripheralWithString :@"nickname" :str];
 }
 
-- (DiscoveredPeripheral*) findDiscoveredPeripheralWithUUID :(NSString *)str {
+- (DiscoveredPeripheral*) findDiscoveredPeripheralWithUUID:(NSString *)str {
     return [self findDiscoveredPeripheralWithString :@"UUID" :str];
 }
 
-- (DiscoveredPeripheral*) findDiscoveredPeripheralWithString :(NSString *)var :(NSString *)str {
+- (DiscoveredPeripheral*) findDiscoveredPeripheralWithString:(NSString *)var :(NSString *)str {
     SEL selector = NSSelectorFromString(var);
     
     pthread_mutex_lock(&_discoveredPeripheralsMutex);
@@ -706,13 +517,13 @@
             }
         }
     
-    NSLog(@"Could not find _discoveredPeripheral with %@ equals to %@", var, str);
+        NSLog(@"Could not find _discoveredPeripheral with %@ equals to %@", var, str);
     
-    if ([var isEqualToString:@"UUID"]) {
-        for (DiscoveredPeripheral* discoveredPeripheral in _discoveredPeripherals) {
-            NSLog((NSString*)[discoveredPeripheral performSelector:selector]);
-        }
-    }
+//        if ([var isEqualToString:@"UUID"]) {
+//            for (DiscoveredPeripheral* discoveredPeripheral in _discoveredPeripherals) {
+//                NSLog((NSString*)[discoveredPeripheral performSelector:selector]);
+//            }
+//        }
     
     pthread_mutex_unlock(&_discoveredPeripheralsMutex);
     

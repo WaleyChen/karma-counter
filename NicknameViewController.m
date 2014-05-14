@@ -44,6 +44,7 @@
     if ([textField.text length] > 0) {
         [Nickname setNickname:textField.text];
         
+        // now that we have a nickname, load the "Karma" view
         [self.view removeFromSuperview];
         
         UIWindow *window = [[UIApplication sharedApplication].delegate window];
