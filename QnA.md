@@ -28,6 +28,9 @@ Don't do too many things at once.
 Pace yourself and make small focused changes.
 Since small code changes and commits decreases likelihood of bugs and is less taxing mentally.
 
+Also, examine Multipeer Connectivity framework example apps and determine whether they'd be easier to use than
+the Core Bluetooth framework.
+
 Did you learn something new?
 I learned about iOS delegates, multithreading, programming and storyboards; Objective-C and Xcode.
 
