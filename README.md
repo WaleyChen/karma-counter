@@ -1,7 +1,4 @@
 karma-counter
 =============
 
-TODO:
-- combine discoveredPeripherals and discoveredPeripheralsLastSeen to a NSMutableSet
-- mod bluetooth code to send karma
-- review/refactor code
+Requires at least two iOS devices with Bluetooth 4.0 to explore full functionality.
