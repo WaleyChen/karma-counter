@@ -368,7 +368,7 @@
     if (central == nil) {
         NSLog(@"");
         NSLog(@"karma not sent since central is nil");
-        
+                
         return;
     }
     

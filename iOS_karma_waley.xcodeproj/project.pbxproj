@@ -145,13 +145,13 @@
 		D026BF4619119A0D005D8767 /* iOS_karma_waley */ = {
 			isa = PBXGroup;
 			children = (
+				D0C3F4671923443100F5FFA0 /* QnA.md */,
 				D0C3F461192063DE00F5FFA0 /* Controllers */,
 				D0C3F460192063C500F5FFA0 /* Models */,
 				D026BF5219119A0D005D8767 /* iOS_karma_waley.xcdatamodeld */,
 				D026BF7B1911A02D005D8767 /* Karma.storyboard */,
 				D026BF5519119A0D005D8767 /* Images.xcassets */,
 				D026BF4719119A0D005D8767 /* Supporting Files */,
-				D0C3F4671923443100F5FFA0 /* QnA.md */,
 			);
 			path = iOS_karma_waley;
 			sourceTree = "<group>";
