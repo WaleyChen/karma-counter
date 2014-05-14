@@ -30,7 +30,8 @@ Also, examine Multipeer Connectivity framework example apps and determine whethe
 the Core Bluetooth framework.
 
 Did you learn something new?
-I learned about iOS delegates, multithreading, programming and storyboards; Objective-C and Xcode.
+I learned about iOS bluetooth connection frameworks, delegates, multithreading, programming and storyboards; 
+Objective-C and Xcode.
 
 Do you feel that this assignment allowed you to showcase your abilities effectively?
 Yes.
