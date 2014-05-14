@@ -11,11 +11,13 @@
 
 @interface DiscoveredPeripheral : NSObject
 
-@property (atomic, readwrite) CBCentral     *central;
-@property (atomic, readwrite) NSNumber      *karmaToSend;
-@property (atomic, readwrite) NSDate        *lastSeen;
-@property (atomic, readwrite) NSString      *nickname;
-@property (atomic, readwrite) CBPeripheral  *peripheral;
-@property (atomic, readwrite) NSString      *UUID;
+@property (atomic, readwrite) CBCentral         *central;
+@property (atomic, readwrite) NSString          *connectionState;
+@property (atomic, readwrite) NSNumber          *karmaToSend;
+@property (atomic, readwrite) NSDate            *lastSeen;
+@property (atomic, readwrite) NSString          *nickname;
+@property (atomic, readwrite) CBPeripheral      *peripheral;
+@property (atomic, readwrite) CBCharacteristic  *subscribedCharacteristic;
+@property (atomic, readwrite) NSString          *UUID;
 
 @end

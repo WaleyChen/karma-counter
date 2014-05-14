@@ -20,6 +20,8 @@
 // TODO - handle unsent karma
 // TODO - reorganize variables
 // TODO - closing and reopening the app causes a chrash
+// putting the app in the background and restoring the app, can no longer send karma
+
 // If the user clicks Send Karma, you tell the device belonging to that user to increment their Karma Count.
 // If you receive a notification to increment your Karma, you display a dialog indicating who sent you the Karma (using local notifications if the application is in the background).
 
@@ -43,6 +45,8 @@
 @property (nonatomic, readwrite) NSInteger              sendDataIndex;
 
 // BK - I cache this characteristic so that if you tap the Disconnect Button, we have some mechanism of telling the peripheral.
+@property( strong, nonatomic) CBCharacteristic      *subscribedCharacteristic;
+
 @property (strong, nonatomic) NSMutableData         *data;
 
 @property (nonatomic, readwrite) NSNumber* num;
@@ -65,8 +69,7 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     
     // bluetooth connection related
@@ -83,19 +86,27 @@
     _nicknameLabel.text = [NSString stringWithFormat:@"%@%@", [Nickname nickname], @"'s Karma"];
     [self updateKarmaLabel];
     
+    // observers for notifications
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(applicationDidEnterBackground)
                                                  name:@"applicationDidEnterBackground"
                                                object:nil];
     
-    _num = [NSNumber numberWithInt:0];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationDidEnterBackground)
+                                                 name:@"applicationWillEnterForeground"
+                                               object:nil];    
 }
 
-- (void)applicationDidEnterBackground
-{
+- (void)applicationDidEnterBackground {
     NSLog(@"applicationDidEnterBackground");
-    [_discoveredPeripherals removeAllObjects];
+    
+    [self disconnectAndRemoveAllPeripherals];
+}
+
+- (void)applicationWillEnterForeground {
+    NSLog(@"applicationWillEnterForeground");
+    [_karmaTableView reloadData];
 }
 
 - (void)didReceiveMemoryWarning
@@ -122,7 +133,10 @@
                     if (secondsBetween >= 1) {
                         NSLog(@"Deleted %@", [_discoveredPeripherals[i] nickname]);
                         
+                        [self disconnectPeripheral:[_discoveredPeripherals[i] peripheral]];
+                        
                         [_discoveredPeripherals removeObjectAtIndex:i];
+                        
                         i--;
                     }
                 }
@@ -186,11 +200,7 @@
     }
     
     NSLog(@"To send %@ karma to %@", discoveredPeripheral.karmaToSend, nicknameOfReceiver);
-    discoveredPeripheral.karmaToSend = [NSNumber numberWithInt:([discoveredPeripheral.karmaToSend intValue] +  1)];
-    
-    [self sendKarma:discoveredPeripheral.central karma:discoveredPeripheral.karmaToSend];
-    
-    discoveredPeripheral.karmaToSend = [NSNumber numberWithInt:([discoveredPeripheral.karmaToSend intValue] -  1)];
+    [self sendKarma:discoveredPeripheral.central karma:[NSNumber numberWithInt:1]];
 }
 
 #pragma mark - CBCentralManagerDelegate Methods
@@ -265,10 +275,12 @@
     
     // set connection state of discovered peripheral
     // have the row cell say "connection failed"
+//    DiscoveredPeripheral* discoveredPeripheral = 
     
-    [self cleanup :peripheral];
+    [self disconnectAndRemoveAllPeripherals];
+//    [self cleanup :peripheral];
     
-    [self scan]; // restart the connection process
+//    [self scan]; // restart the connection process
 }
 
 /** We've connected to the peripheral, now we need to discover the services and characteristics to find the 'transfer' characteristic.
@@ -277,7 +289,7 @@
 {
     NSLog(@"Connection established.");
     NSLog(@"Peripheral Connected");
-        
+    
     // Clear the data that we may already have
     [self.data setLength:0];
     
@@ -300,6 +312,29 @@
 }
 
 #pragma mark - Peripheral Methods
+
+- (void)disconnectAndRemoveAllPeripherals {
+    pthread_mutex_lock(&_discoveredPeripheralsMutex);
+    
+        for (DiscoveredPeripheral* discoveredPeripheral in _discoveredPeripherals) {
+            [self disconnectPeripheral:discoveredPeripheral.peripheral];
+        }
+    
+        [_discoveredPeripherals removeAllObjects];
+    
+    pthread_mutex_unlock(&_discoveredPeripheralsMutex);
+    
+    [_karmaTableView reloadData];
+}
+
+- (void)disconnectPeripheral:(CBPeripheral *)peripheral {
+    DiscoveredPeripheral *discoveredPeripheral = [self findDiscoveredPeripheralWithUUID:peripheral.identifier.UUIDString];
+    
+    if (discoveredPeripheral != nil && discoveredPeripheral.subscribedCharacteristic != nil)
+        [peripheral setNotifyValue:NO forCharacteristic:discoveredPeripheral.subscribedCharacteristic];
+    
+    [self.centralManager cancelPeripheralConnection:peripheral];
+}
 
 // Required protocol method.  A full app should take care of all the possible states,
 // but we're just waiting for to know when the CBPeripheralManager is ready
@@ -413,7 +448,16 @@
 - (void)sendKarma:(CBCentral*)central karma:(NSNumber*)karma
 {
     if (central == nil) {
-        NSLog(@"Data not sent, central is nil");
+        NSLog(@"");
+        NSLog(@"Karma not sent since central is nil");
+        
+        // temporary
+        NSLog(@"Clearing _discoveredPeripherals");
+        
+        [self disconnectAndRemoveAllPeripherals];
+        [_karmaTableView reloadData];
+        
+        return;
     }
     
     NSString *karmaString = [karma stringValue];
@@ -527,6 +571,8 @@
         return;
     }
     
+    DiscoveredPeripheral *discoveredPeripheral = [self findDiscoveredPeripheralWithUUID:peripheral.identifier.UUIDString];
+    
     // Again, we loop through the array, just in case.
     for (CBCharacteristic *characteristic in service.characteristics) {
         
@@ -535,6 +581,12 @@
             
             // If it is, subscribe to it
             [peripheral setNotifyValue:YES forCharacteristic:characteristic];
+            
+            if (discoveredPeripheral == nil) {
+                NSLog(@"discoveredPeripheral not set");
+            } else {
+                discoveredPeripheral.subscribedCharacteristic = characteristic;
+            }
         }
     }
     
