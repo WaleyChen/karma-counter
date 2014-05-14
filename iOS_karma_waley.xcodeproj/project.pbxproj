@@ -31,7 +31,6 @@
 		D0C3F45F19203CDD00F5FFA0 /* Singleton.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C3F45E19203CDD00F5FFA0 /* Singleton.m */; };
 		D0C3F464192327B900F5FFA0 /* UIView+Toast.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C3F463192327B900F5FFA0 /* UIView+Toast.m */; };
 		D0C3F4661923280500F5FFA0 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0C3F4651923280500F5FFA0 /* QuartzCore.framework */; };
-		D0C3F4681923443100F5FFA0 /* QnA.md in Resources */ = {isa = PBXBuildFile; fileRef = D0C3F4671923443100F5FFA0 /* QnA.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -80,7 +79,6 @@
 		D0C3F462192327B900F5FFA0 /* UIView+Toast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Toast.h"; sourceTree = "<group>"; };
 		D0C3F463192327B900F5FFA0 /* UIView+Toast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Toast.m"; sourceTree = "<group>"; };
 		D0C3F4651923280500F5FFA0 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		D0C3F4671923443100F5FFA0 /* QnA.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = QnA.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,7 +143,6 @@
 		D026BF4619119A0D005D8767 /* iOS_karma_waley */ = {
 			isa = PBXGroup;
 			children = (
-				D0C3F4671923443100F5FFA0 /* QnA.md */,
 				D0C3F461192063DE00F5FFA0 /* Controllers */,
 				D0C3F460192063C500F5FFA0 /* Models */,
 				D026BF5219119A0D005D8767 /* iOS_karma_waley.xcdatamodeld */,
@@ -291,7 +288,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				D026BF7C1911A02D005D8767 /* Karma.storyboard in Resources */,
-				D0C3F4681923443100F5FFA0 /* QnA.md in Resources */,
 				D026BF4B19119A0D005D8767 /* InfoPlist.strings in Resources */,
 				D026BF5619119A0D005D8767 /* Images.xcassets in Resources */,
 			);
