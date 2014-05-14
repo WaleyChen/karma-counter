@@ -1,8 +1,5 @@
 What do you think are the greatest risk areas in completing this project?
-Whether the project may be too difficult since I have no iOS/mobile experience.
 
-Whether it's better to use Wi-Fi or the Multipeer Connectivity framework than the Core Bluetooth framework
-in order to send karma.
 
 Name two or three features that could be added to this project to improve the user experience.
 Be able to specify how much karma to send.
@@ -13,8 +10,7 @@ How fast and well does the app work when the app is receiving karma from multipl
 How fast and well does the app work when the app is constantly receiving karma from a person who is different from the person I'm constantly sending karma to?
 
 Since the iPhone can only pair with 1 other device at a time and creating a bluetooth connection is extra overhead,
-I can't imagine the app being capable of sending karma in real time since it's likely to be slow from having to constantly
-establish new connections in order to send and receive karma.
+I can't imagine the app being capable of sending karma in real time since it's likely to be slow from having to constantly establish new connections in order to send and receive karma.
 
 How long did this assignment take?
 ~50 hours.
