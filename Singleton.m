@@ -11,7 +11,7 @@
 
 @implementation Singleton
 
-// retreive the entity object
+// retreive the singleton/specified entity object
 + (NSObject*)executeFetchRequest:(NSString*)entityName {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:entityName
@@ -31,7 +31,7 @@
     return fetchedRecords[0];
 }
 
-// retrives the attribute value from the specified entity
+// retrive the specified attribute value from the specified entity
 + (NSObject*)getEntity:(NSString*)entityName attribute:(NSString*)attributeName {
     SEL selector = NSSelectorFromString(attributeName);
     return [[self executeFetchRequest:entityName] performSelector:selector];

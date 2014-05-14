@@ -20,6 +20,8 @@
 // TODO - handle unsent karma
 // TODO - reorganize variables
 // TODO - closing and reopening the app causes a chrash
+// If the user clicks Send Karma, you tell the device belonging to that user to increment their Karma Count.
+// If you receive a notification to increment your Karma, you display a dialog indicating who sent you the Karma (using local notifications if the application is in the background).
 
 // central related
 @property (strong, nonatomic) CBCentralManager          *centralManager;
@@ -165,6 +167,8 @@
         [sendBtn addTarget:self action:@selector(sendKarmaBtnPressed:) forControlEvents:UIControlEventTouchUpInside];
     
         cell.accessoryView = sendBtn;
+    } else { // else render please wait
+        
     }
         
     return cell;
@@ -178,13 +182,15 @@
     
     if (discoveredPeripheral == nil) {
         NSLog(@"Could not find %@ in order to send karma", nicknameOfReceiver);
-    } else {
-        NSLog(@"To send %@ karma to %@", discoveredPeripheral.karmaToSend, nicknameOfReceiver);
-            
-        discoveredPeripheral.karmaToSend = [NSNumber numberWithInt:([discoveredPeripheral.karmaToSend intValue] +  1)];
+        return;
     }
     
+    NSLog(@"To send %@ karma to %@", discoveredPeripheral.karmaToSend, nicknameOfReceiver);
+    discoveredPeripheral.karmaToSend = [NSNumber numberWithInt:([discoveredPeripheral.karmaToSend intValue] +  1)];
+    
     [self sendKarma:discoveredPeripheral.central karma:discoveredPeripheral.karmaToSend];
+    
+    discoveredPeripheral.karmaToSend = [NSNumber numberWithInt:([discoveredPeripheral.karmaToSend intValue] -  1)];
 }
 
 #pragma mark - CBCentralManagerDelegate Methods
@@ -256,7 +262,13 @@
 - (void)centralManager:(CBCentralManager *)central didFailToConnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
 {
     NSLog(@"Failed to connect to %@. (%@)", peripheral, [error localizedDescription]);
+    
+    // set connection state of discovered peripheral
+    // have the row cell say "connection failed"
+    
     [self cleanup :peripheral];
+    
+    [self scan]; // restart the connection process
 }
 
 /** We've connected to the peripheral, now we need to discover the services and characteristics to find the 'transfer' characteristic.
@@ -265,11 +277,7 @@
 {
     NSLog(@"Connection established.");
     NSLog(@"Peripheral Connected");
-    
-    // Stop scanning
-//    [self.centralManager stopScan];
-//    NSLog(@"Scanning stopped");
-    
+        
     // Clear the data that we may already have
     [self.data setLength:0];
     
@@ -334,12 +342,14 @@
     NSLog(@"Exit peripheralManagerDidUpdateState().");
 }
 
-/** Catch when someone subscribes to our characteristic, then start sending them data
+/** Catch when someone subscribes to our characteristic
  */
 - (void)peripheralManager:(CBPeripheralManager *)peripheral central:(CBCentral *)central didSubscribeToCharacteristic:(CBCharacteristic *)characteristic
 {
     NSString* centralUUID = [central identifier].UUIDString;
+    
     NSLog(@"Central with UUID of %@ subscribed to characteristic", centralUUID);
+    
     DiscoveredPeripheral* discoveredPeripheral = [self findDiscoveredPeripheralWithUUID :centralUUID];
     
     if (discoveredPeripheral == nil) {
@@ -350,9 +360,7 @@
     [_karmaTableView reloadData];
     
     NSString* karmaToSend = [NSString stringWithFormat:@"%d", discoveredPeripheral.karmaToSend.intValue];
-    
-    // BK - Fire up a timer that will send data at regular intervals.
-    // self.sendTimer = [NSTimer scheduledTimerWithTimeInterval:kSendDataInterval target:self selector:@selector(transferDataBasedOnTimer:) userInfo:nil repeats:NO];
+    discoveredPeripheral.karmaToSend = [NSNumber numberWithInt:0];
     
     // Reset the index
     self.sendDataIndex = 0;
@@ -445,8 +453,25 @@
         // Copy out the data we want
         NSData *chunk = dataToSend;
         
+        if (_peripheralManager == nil) {
+            NSLog(@"peripheralManager is nil.");
+            return;
+        }
+        
+        if (chunk == nil) {
+            NSLog(@"chunk is nil.");
+            return;
+        }
+        
+        if (central == nil) {
+            NSLog(@"central is nil.");
+            return;
+        }
+        
         // Send it
-        didSend = [self.peripheralManager updateValue:chunk forCharacteristic:self.transferCharacteristic onSubscribedCentrals:nil];
+        didSend = [self.peripheralManager updateValue:chunk
+                                    forCharacteristic:_transferCharacteristic
+                                 onSubscribedCentrals:[NSArray arrayWithObject:central]];
         
         // If it didn't work, drop out and wait for the callback
         if (!didSend) {
@@ -644,6 +669,7 @@
 }
 
 #pragma - helper methods
+
 - (void) updateKarmaLabel {
     _karmaLabel.text = [NSString stringWithFormat:@"%d", [[Karma karma] intValue]];
 }
